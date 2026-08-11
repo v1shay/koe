@@ -14,9 +14,14 @@ let xcode15Compatibility = false
 
 let shouldSkipWhisperKit = skipWhisperKit || xcode15Compatibility
 
+let grdbDependency: Package.Dependency = xcode15Compatibility
+    ? .package(url: "https://github.com/groue/GRDB.swift", exact: "6.29.3")
+    : .package(url: "https://github.com/groue/GRDB.swift", from: "7.0.0")
+
 let packageDependencies: [Package.Dependency] = [
-    // GRDB for SQLite (dictation history + transcription records)
-    .package(url: "https://github.com/groue/GRDB.swift", exact: "6.29.3"),
+    // GRDB 7 is Swift 6 language-mode clean, while GRDB 6 is the newest line
+    // whose package manifest remains compatible with Xcode 15.4.
+    grdbDependency,
     // FluidAudio for Parakeet and Nemotron STT on CoreML/ANE. Keep this exact
     // until MacParakeet migrates from DownloadUtils to the ModelHub API that
     // replaced it in the breaking 0.15.5 release.
