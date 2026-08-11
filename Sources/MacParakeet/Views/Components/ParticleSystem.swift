@@ -2,6 +2,7 @@ import SwiftUI
 
 /// Lightweight particle effect for hero contexts — merkaba shimmer, portal hover, celebrations.
 /// 6-12 particles max, slow drift, respects reduced motion accessibility.
+@MainActor
 struct ParticleField: View {
     var particleCount: Int = 8
     var tintColor: Color = DesignSystem.Colors.accent

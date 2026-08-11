@@ -1,6 +1,7 @@
 import MacParakeetViewModels
 import SwiftUI
 
+@MainActor
 struct MeetingSourceHealthChips: View {
     let chips: [MeetingSourceHealthChip]
 
@@ -22,6 +23,7 @@ struct MeetingSourceHealthChips: View {
     }
 }
 
+@MainActor
 struct MeetingSourceHealthGlyph: View {
     let chip: MeetingSourceHealthChip
 
@@ -43,6 +45,7 @@ struct MeetingSourceHealthGlyph: View {
     }
 }
 
+@MainActor
 struct MeetingSourceHealthInlineBadge: View {
     let chip: MeetingSourceHealthChip
 
@@ -52,6 +55,7 @@ struct MeetingSourceHealthInlineBadge: View {
     }
 }
 
+@MainActor
 private struct MeetingSourceHealthChipView: View {
     let chip: MeetingSourceHealthChip
     let showsText: Bool

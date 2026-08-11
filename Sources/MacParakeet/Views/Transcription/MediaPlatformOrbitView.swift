@@ -13,6 +13,7 @@ import MacParakeetCore
 /// the constellation makes one smooth full revolution on hover (a single eased
 /// animation that settles back to zero work), and the center blooms on a match. All
 /// motion is gated by Reduce Motion.
+@MainActor
 struct MediaPlatformOrbitView: View {
     /// The platform recognized from the current URL draft (nil while idle/typing).
     var matched: MediaPlatform?

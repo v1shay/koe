@@ -5,6 +5,7 @@ import SwiftUI
 // MARK: - Animated Checkmark (Apple Pay style)
 
 /// Ring draws, then check strokes in. Used for meeting completion confirmation.
+@MainActor
 private struct MeetingCompletionCheckmarkView: View {
     @State private var ringTrim: CGFloat = 0
     @State private var checkTrim: CGFloat = 0
@@ -53,6 +54,7 @@ private struct CheckmarkShape: Shape {
 
 // MARK: - Pill View
 
+@MainActor
 struct MeetingRecordingPillView: View {
     @Bindable var viewModel: MeetingRecordingPillViewModel
     var onTap: (() -> Void)? = nil

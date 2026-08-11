@@ -112,7 +112,8 @@ final class YouTubeInputPanelController {
             object: panel,
             queue: .main
         ) { [weak self] _ in
-            Task { @MainActor in self?.hide() }
+            guard let controller = self else { return }
+            Task { @MainActor in controller.hide() }
         }
     }
 }

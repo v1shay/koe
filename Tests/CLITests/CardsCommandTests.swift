@@ -57,7 +57,7 @@ final class CardsCommandTests: XCTestCase {
         ])
 
         let output = try await captureStandardOutput { try await command.run() }
-        let lines = output.split(whereSeparator: \Character.isNewline)
+        let lines = output.split(whereSeparator: { $0.isNewline })
 
         XCTAssertEqual(lines.count, 1)
         let row: [String: Any] = try decodeJSON(String(lines[0]))

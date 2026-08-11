@@ -16,6 +16,44 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  xcode-15-4:
+    runs-on: macos-14
+    timeout-minutes: 35
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Select Xcode 15.4
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: "15.4"
+
+      - name: Toolchain Versions
+        run: |
+          xcodebuild -version
+          swift --version
+
+      - name: Cache SwiftPM Dependencies
+        uses: actions/cache@v5
+        with:
+          path: |
+            .build/checkouts
+            .build/repositories
+            ~/Library/Caches/org.swift.swiftpm
+          key: ${{ runner.os }}-xcode-15.4-spm-${{ hashFiles('Package.swift', 'Package.resolved') }}
+          restore-keys: |
+            ${{ runner.os }}-xcode-15.4-spm-
+
+      - name: Build with Xcode 15.4
+        timeout-minutes: 15
+        run: swift build
+
+      - name: Voice Flow tests with Xcode 15.4
+        timeout-minutes: 20
+        run: >-
+          swift test --parallel --filter
+          'FnKeyStateMachineTests|HotkeyGestureControllerTests|TextProcessingPipelineTests|DictationFlowStateMachineTests|DictationFlowTests|AIFormatterTests|MenuBarCoordinatorTests/testVoiceFlowMenuBarStatesExposeExpectedAnimationFrames|SpeechEnginePreferenceTests/testAvailableEnginesMatchCompiledToolchain|SpeechEnginePreferenceTests/testUnavailablePersistedEnginesFallBackToParakeet'
+
   swift-test:
     runs-on: macos-14
     timeout-minutes: 45

@@ -8,6 +8,7 @@ import MacParakeetViewModels
 ///
 /// Empty-query state is the parent's problem — this view never renders
 /// for an empty query (the parent only mounts it when `isSearching`).
+@MainActor
 struct SettingsSearchResultsList: View {
     let results: [SettingsSearchEntry]
     /// Tapping a result yields its entry to the parent so the parent
@@ -48,6 +49,7 @@ struct SettingsSearchResultsList: View {
 /// One result row. Card-style affordance with hover lift, breadcrumb
 /// subtitle ("in {Card}"), and a faint tab badge so the user can see
 /// where they're about to land before they click.
+@MainActor
 private struct SettingsSearchResultRow: View {
     let entry: SettingsSearchEntry
     let onTap: () -> Void

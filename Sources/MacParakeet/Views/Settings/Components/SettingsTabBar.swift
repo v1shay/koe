@@ -12,6 +12,7 @@ import MacParakeetViewModels
 ///
 /// Keyboard: ⌘1–⌘4 navigate to each tab. The shortcut hint is shown via
 /// `.help(...)` on hover.
+@MainActor
 struct SettingsTabBar: View {
     @Binding var activeTab: SettingsTab
     let tabBadges: [SettingsTab: SettingsStatusChip.Status]
@@ -127,6 +128,7 @@ enum SettingsTabMetadata {
     }
 }
 
+#if compiler(>=6.0)
 #Preview("Light — clean", traits: .fixedLayout(width: 640, height: 120)) {
     @Previewable @State var tab: SettingsTab = .capture
 
@@ -166,3 +168,4 @@ enum SettingsTabMetadata {
     .background(DesignSystem.Colors.background)
     .preferredColorScheme(.dark)
 }
+#endif

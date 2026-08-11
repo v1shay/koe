@@ -2,6 +2,7 @@ import SwiftUI
 import MacParakeetCore
 import MacParakeetViewModels
 
+@MainActor
 struct OnboardingFlowView: View {
     @Bindable var viewModel: OnboardingViewModel
     let onFinish: () -> Void

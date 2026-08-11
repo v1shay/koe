@@ -4,6 +4,7 @@ import MacParakeetViewModels
 
 /// Persistent floating pill shown when idle — always visible at bottom of screen.
 /// Expands on hover to show the available dictation entry points.
+@MainActor
 struct IdlePillView: View {
     @Bindable var viewModel: IdlePillViewModel
 

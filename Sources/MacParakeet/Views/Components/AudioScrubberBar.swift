@@ -3,6 +3,7 @@ import MacParakeetViewModels
 
 /// Compact horizontal audio scrubber bar for audio-only playback.
 /// Fixed ~44px height with play/pause, scrubber track, and time labels.
+@MainActor
 struct AudioScrubberBar: View {
     @Bindable var viewModel: MediaPlayerViewModel
 

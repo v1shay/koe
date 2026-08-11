@@ -2,6 +2,7 @@ import SwiftUI
 import MacParakeetCore
 import MacParakeetViewModels
 
+@MainActor
 struct VocabularyView: View {
     @Bindable var settingsViewModel: SettingsViewModel
     @Bindable var customWordsViewModel: CustomWordsViewModel

@@ -47,9 +47,9 @@ public final class FFmpegAudioTrackProbe: AudioTrackProbing, Sendable {
         }
 
         var tracks: [AudioTrackDescriptor] = []
-        for line in output.split(whereSeparator: \Character.isNewline) {
+        for line in output.split(whereSeparator: { $0.isNewline }) {
             let string = String(line)
-            let trimmed = string.trimmingCharacters(in: .whitespaces)
+            let trimmed = string.trimmingCharacters(in: CharacterSet.whitespaces)
             if trimmed == "Stream mapping:" || trimmed.hasPrefix("Output #") {
                 break
             }

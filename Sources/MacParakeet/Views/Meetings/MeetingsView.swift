@@ -3,6 +3,7 @@ import SwiftUI
 import MacParakeetCore
 import MacParakeetViewModels
 
+@MainActor
 struct MeetingsView: View {
     @Bindable var viewModel: MeetingsWorkspaceViewModel
 
@@ -879,6 +880,7 @@ struct MeetingsView: View {
     }
 }
 
+@MainActor
 private struct CalendarInlineControlsRow: View {
     @Bindable var settingsViewModel: SettingsViewModel
     var onOpenCalendarSettings: () -> Void
@@ -1053,6 +1055,7 @@ private struct CalendarInlineControlsRow: View {
     }
 }
 
+@MainActor
 private struct CalendarModeBadge: View {
     let mode: CalendarAutoStartMode
 
@@ -1088,6 +1091,7 @@ private struct CalendarModeBadge: View {
     }
 }
 
+@MainActor
 private struct CalendarMenuPicker<Content: View>: View {
     let label: String
     @ViewBuilder var content: () -> Content
@@ -1117,6 +1121,7 @@ private struct CalendarMenuPicker<Content: View>: View {
     }
 }
 
+@MainActor
 private struct MeetingsSection<Content: View>: View {
     let title: String
     let icon: String
@@ -1152,6 +1157,7 @@ private struct MeetingsSection<Content: View>: View {
 /// invalidates only this small chip — keeping it out of `MeetingsView.body`,
 /// which would otherwise re-lay out the whole meetings list every second while
 /// recording. See `plans/active/2026-05-meeting-recording-cpu-debug.md`.
+@MainActor
 private struct MeetingsLiveStatusChip: View {
     @Bindable var viewModel: MeetingsWorkspaceViewModel
 
@@ -1190,6 +1196,7 @@ private struct MeetingsLiveStatusChip: View {
     }
 }
 
+@MainActor
 private struct MeetingsStatusChip: View {
     let icon: String
     let title: String
@@ -1213,6 +1220,7 @@ private struct MeetingsStatusChip: View {
     }
 }
 
+@MainActor
 private struct MeetingsInlineState: View {
     let icon: String
     let title: String
@@ -1254,6 +1262,7 @@ private struct MeetingsInlineState: View {
     }
 }
 
+@MainActor
 private struct MeetingsLoadingRow: View {
     let title: String
 
@@ -1269,6 +1278,7 @@ private struct MeetingsLoadingRow: View {
     }
 }
 
+@MainActor
 private struct CalendarEventRow: View {
     let event: CalendarEvent
 
@@ -1320,6 +1330,7 @@ private struct CalendarEventRow: View {
     }
 }
 
+@MainActor
 private struct AttentionRow: View {
     let item: MeetingsWorkspaceViewModel.AttentionItem
     var action: () -> Void
@@ -1370,6 +1381,7 @@ private struct AttentionRow: View {
     }
 }
 
+@MainActor
 private struct IntelligenceReadyRow: View {
     let displayName: String
     let locality: String
@@ -1449,6 +1461,7 @@ private struct IntelligenceReadyRow: View {
     }
 }
 
+@MainActor
 private struct LiveAskPromptRow: View {
     let pinnedCount: Int
     let previewPrompts: [QuickPrompt]
@@ -1547,6 +1560,7 @@ private struct LiveAskPromptRow: View {
     }
 }
 
+@MainActor
 private struct MeetingsHairline: View {
     var body: some View {
         Rectangle()
@@ -1559,6 +1573,7 @@ private struct MeetingsHairline: View {
 /// Toggle chip for a single meeting auto-note. Tapping flips whether the
 /// prompt auto-runs after a meeting finishes. On = filled accent; off =
 /// neutral outline.
+@MainActor
 private struct AutoNoteChip: View {
     let title: String
     let isOn: Bool

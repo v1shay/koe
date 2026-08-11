@@ -80,6 +80,7 @@ private extension SettingsCaptureWorkflow {
     }
 }
 
+@MainActor
 struct SettingsView: View {
     @Bindable var viewModel: SettingsViewModel
     @Bindable var llmSettingsViewModel: LLMSettingsViewModel
@@ -2326,7 +2327,7 @@ struct SettingsView: View {
     }
 
     private var transcriptionEngineOptions: [SpeechEnginePreference] {
-        SpeechEnginePreference.allCases.filter { engine in
+        SpeechEnginePreference.availableCases.filter { engine in
             engine != .cohere
                 || AppFeatures.cohereEngineEnabled
                 || viewModel.engine.transcriptionSpeechEnginePreference == .cohere
@@ -3293,6 +3294,7 @@ struct SettingsView: View {
         }
     }
 
+    @MainActor
     private struct ModelDeleteIconButton: View {
         let helpText: String
         let accessibilityLabel: String

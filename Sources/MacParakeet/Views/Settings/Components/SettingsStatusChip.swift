@@ -12,6 +12,7 @@ import SwiftUI
 /// and as the badge on `SettingsTabBar` pills. The same enum drives both view
 /// sites so the visual language stays consistent and the source of truth is the
 /// owning ViewModel — never duplicated polling.
+@MainActor
 struct SettingsStatusChip: View {
     enum Status: Equatable {
         case ok

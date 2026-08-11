@@ -4,6 +4,7 @@ import SwiftUI
 /// Single row in the Meetings list. Apple-minimal layout: title + snippet on
 /// the left, time-of-day + duration trailing right. Conditional decorators
 /// (recovered dot, speaker count) appear only when they carry signal.
+@MainActor
 struct MeetingRowCard<MenuContent: View>: View {
     let transcription: Transcription
     var searchText: String = ""

@@ -2,6 +2,7 @@ import SwiftUI
 import MacParakeetCore
 import MacParakeetViewModels
 
+@MainActor
 struct DiscoverSidebarCard: View {
     let viewModel: DiscoverViewModel
     let isSelected: Bool

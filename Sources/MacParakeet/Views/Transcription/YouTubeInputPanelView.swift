@@ -2,6 +2,7 @@ import SwiftUI
 import MacParakeetCore
 import MacParakeetViewModels
 
+@MainActor
 struct YouTubeInputPanelView: View {
     @Bindable var viewModel: TranscriptionViewModel
     var onTranscribe: (String) -> Void

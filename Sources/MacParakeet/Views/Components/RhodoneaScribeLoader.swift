@@ -3,6 +3,7 @@ import SwiftUI
 /// Sacred-geometry rose-curve loader used for compact "work is in flight"
 /// states. It has no intrinsic size; callers keep ownership of the icon box
 /// with an outer `.frame(width:height:)`.
+@MainActor
 struct RhodoneaScribeLoader: View {
     var tint: Color
     var paused: Bool = false

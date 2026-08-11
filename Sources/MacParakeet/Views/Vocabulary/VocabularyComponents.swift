@@ -24,6 +24,7 @@ enum VocabMetrics {
 /// Focus can be driven internally (default) or bound to an external
 /// `@FocusState` so callers can focus it programmatically — e.g. an empty
 /// state's "Add your first…" button focusing the add form.
+@MainActor
 struct ParakeetTextField: View {
     let placeholder: String
     @Binding var text: String
@@ -94,6 +95,7 @@ struct ParakeetTextField: View {
 /// A plain section header — uppercase label with an optional trailing accessory
 /// (typically a contextual count) and an optional one-line subtitle. Replaces
 /// the heavy icon-tile card header for content that doesn't warrant a card.
+@MainActor
 struct VocabSectionHeader<Trailing: View>: View {
     private let title: String
     private let subtitle: String?
@@ -158,6 +160,7 @@ extension View {
 /// Title + subtitle on the left, a neutral Done button on the right. Gives the
 /// management sheets a real header bar so Done is sheet-level chrome rather than
 /// a second coral button buried mid-content.
+@MainActor
 struct VocabSheetHeader: View {
     let title: String
     let subtitle: String
@@ -187,6 +190,7 @@ struct VocabSheetHeader: View {
 
 // MARK: - Delete icon button
 
+@MainActor
 struct EditIconButton: View {
     let helpText: String
     let accessibilityName: String
@@ -209,6 +213,7 @@ struct EditIconButton: View {
 
 /// A trash button that rests in the secondary color and warms to red on hover,
 /// giving the destructive affordance a clear, contained signal.
+@MainActor
 struct DeleteIconButton: View {
     let helpText: String
     let accessibilityName: String

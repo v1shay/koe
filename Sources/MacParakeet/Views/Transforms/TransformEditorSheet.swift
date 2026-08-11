@@ -12,6 +12,7 @@ import MacParakeetViewModels
 /// Validation is reactive — fires on every field change after the first
 /// interaction, surfacing per-card error rows. Save button gates on
 /// `viewModel.isValid`.
+@MainActor
 struct TransformEditorSheet: View {
     @Bindable var viewModel: TransformEditorViewModel
     let existingPrompts: [Prompt]
@@ -190,6 +191,7 @@ struct TransformEditorSheet: View {
 
 // MARK: - Editor card chrome
 
+@MainActor
 private struct EditorCard<Content: View>: View {
     let title: String
     @ViewBuilder let content: Content
@@ -212,6 +214,7 @@ private struct EditorCard<Content: View>: View {
     }
 }
 
+@MainActor
 private struct ValidationRow: View {
     let message: String
 
@@ -234,6 +237,7 @@ private struct ValidationRow: View {
 // Keeps the AppKit-level NSEvent monitor scoped to its focused state, so
 // the surrounding sheet keeps normal text-field behaviour.
 
+@MainActor
 struct ShortcutRecorderField: View {
     @Binding var shortcut: TransformShortcut?
     @Binding var isRecording: Bool

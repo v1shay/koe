@@ -103,7 +103,7 @@ public final class CrashReporter {
         altStack.withUnsafeMutableBufferPointer { buf in
             var ss = stack_t()
             ss.ss_sp = UnsafeMutableRawPointer(buf.baseAddress!)
-            ss.ss_size = buf.count
+            ss.ss_size = UInt(buf.count)
             ss.ss_flags = 0
             sigaltstack(&ss, nil)
         }

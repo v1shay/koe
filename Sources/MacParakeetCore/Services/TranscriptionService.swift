@@ -500,16 +500,16 @@ public actor TranscriptionService: SpeechEngineOverrideTranscriptionService, Aud
         let speechEngine = resolvedMeetingSpeechEngineSelection(for: recording)
 
         return try await Observability.withOperationContext(operation.operationContext) {
-            try await assertCanTranscribeOrEmitPreflight(
+            try await self.assertCanTranscribeOrEmitPreflight(
                 operation,
                 audioDurationSeconds: recording.durationSeconds
             )
 
-            var transcription = makeMeetingTranscriptionStub(recording: recording)
+            var transcription = self.makeMeetingTranscriptionStub(recording: recording)
             do {
-                try transcriptionRepo.save(transcription)
+                try self.transcriptionRepo.save(transcription)
             } catch {
-                sendTranscriptionOperation(
+                self.sendTranscriptionOperation(
                     operation,
                     outcome: .failure,
                     stage: .persistence,

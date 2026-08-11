@@ -29,6 +29,7 @@ struct TriangleShape: Shape {
 ///
 /// Core Animation owns the continuous motion so displaying this spinner does not
 /// re-evaluate its surrounding SwiftUI hierarchy every frame.
+@MainActor
 struct SpinnerRingView: View {
     var size: CGFloat = 26
     var revolutionDuration: Double = 3.0
@@ -425,6 +426,7 @@ final class SpinnerRingNSView: NSView {
 ///   Phase 1 — triangles slow and align into Star of David (stillness)
 ///   Phase 2 — strokes and vertices dissolve
 ///   Phase 3 — center nexus exhales and fades last
+@MainActor
 struct MerkabaDissipateView: View {
     var size: CGFloat = 26
     var tintColor: Color = .white
@@ -550,6 +552,7 @@ struct MerkabaDissipateView: View {
 /// inhale animation, just the fully-bloomed ring + nexus). Exposed to
 /// VoiceOver as "Ready to record" — `.ready` is a poised pause, not an
 /// engaged mic, so we deliberately avoid "Listening".
+@MainActor
 struct BreathingRingView: View {
     var size: CGFloat = 18
     var ringColor: Color = .white
@@ -636,6 +639,7 @@ struct BreathingRingView: View {
 /// bitmap every frame, burning ~15-18% CPU at idle. Freezing the opacity
 /// pulses AND removing the drawing group drops *closed-window* idle cost to
 /// 0% while restoring the hero spin.
+@MainActor
 struct MeditativeMerkabaView: View {
     var size: CGFloat = 64
     var revolutionDuration: Double = 6.0
@@ -737,6 +741,7 @@ struct MeditativeMerkabaView: View {
 
 /// Thin line with centered diamond ornament (two tiny triangles point-to-point).
 /// Warm coral tint on the diamond for personality.
+@MainActor
 struct SacredGeometryDivider: View {
     var body: some View {
         HStack(spacing: 0) {

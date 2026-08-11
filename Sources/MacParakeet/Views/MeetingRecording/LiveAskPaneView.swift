@@ -7,6 +7,7 @@ import SwiftUI
 /// with a curated row of "thinking-partner" starter prompts in the empty state.
 /// In-memory only while recording; promoted to a persisted ChatConversation when
 /// the meeting is finalized (see TranscriptChatViewModel.bindPersistedConversation).
+@MainActor
 struct LiveAskPaneView: View {
     @Bindable var viewModel: TranscriptChatViewModel
     @Bindable var quickPromptsViewModel: QuickPromptsViewModel
@@ -403,6 +404,7 @@ struct LiveAskPaneView: View {
 /// visually identical and behavior never drifts. Groups come from
 /// `QuickPromptsViewModel.visiblePromptGroups`, which preserves first-occurrence
 /// group order so users who reorder pills control how groups appear.
+@MainActor
 private struct StarterPromptList: View {
     let groups: [(label: String, prompts: [QuickPrompt])]
     let onSelect: (QuickPrompt) -> Void
@@ -435,6 +437,7 @@ private struct StarterPromptList: View {
 /// Sparkle button at the leading edge of the input bar. Toggles the prompt
 /// menu popover. Visually tracks open/closed state so the user always knows
 /// what the menu is doing.
+@MainActor
 private struct PromptMenuButton: View {
     @Binding var isOpen: Bool
     @State private var isHovered = false
@@ -472,6 +475,7 @@ private struct PromptMenuButton: View {
     }
 }
 
+@MainActor
 private struct StarterPromptPill: View {
     let entry: QuickPrompt
     let action: () -> Void
@@ -535,6 +539,7 @@ private struct StarterPromptPill: View {
 
 /// Compact horizontal-scroll pill for the follow-up row above the input.
 /// Smaller than StarterPromptPill — meant to be persistent, not announce itself.
+@MainActor
 private struct FollowUpPill: View {
     let label: String
     let action: () -> Void
@@ -584,6 +589,7 @@ private struct FollowUpPill: View {
 /// avatar burning width, no chat-app chrome competing with content. Distinct
 /// from the post-meeting transcript chat by design: that surface is archival
 /// and leisurely; this one is in-the-moment thinking partnership.
+@MainActor
 private struct MessageBubble: View {
     let message: ChatDisplayMessage
     let isLast: Bool
@@ -604,6 +610,7 @@ private struct MessageBubble: View {
     }
 }
 
+@MainActor
 private struct UserTurnView: View {
     let content: String
 
@@ -631,6 +638,7 @@ private struct UserTurnView: View {
     }
 }
 
+@MainActor
 private struct AssistantTurnView: View {
     let content: String
     let isStreaming: Bool
@@ -735,6 +743,7 @@ private enum AssistantActionFocus: Hashable {
 /// the "whisper layout" intent: no chat-app chrome, just the response and
 /// quiet affordances that emerge on hover. Per-button hover bumps glyph
 /// opacity for a touch of liveliness without animating during reveal.
+@MainActor
 private struct AssistantMessageActions: View {
     let content: String
     let showRegenerate: Bool
@@ -811,6 +820,7 @@ private struct AssistantMessageActions: View {
 /// anchored loading affordance — not a glyph and floating decoration. Pure
 /// opacity wave (no scale) keeps static moments clean; the merkaba does the
 /// rotation work.
+@MainActor
 private struct ThinkingDots: View {
     @State private var phase = 0
     private let dotCount = 3
@@ -845,6 +855,7 @@ private struct ThinkingDots: View {
 /// motion into the live Ask; idle carries the brand identity (Cursive P /
 /// Breath Wave) for subtle product recognition next to every completed AI
 /// turn. Two glyphs, two roles: motion = "thinking", brand = "sender."
+@MainActor
 private struct AssistantHead: View {
     let isStreaming: Bool
 
@@ -868,6 +879,7 @@ private struct AssistantHead: View {
 /// 0.4 during streaming so the column feels alive without competing with the
 /// spinning merkaba above it. Two motion sources stacked would be noise — the
 /// merkaba does the rotation, the rule does the static "active" presence.
+@MainActor
 private struct AssistantAccentRule: View {
     let isActive: Bool
 

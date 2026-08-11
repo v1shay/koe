@@ -11,6 +11,7 @@ private struct AIFormatterInstalledApp: Identifiable, Sendable {
     var id: String { bundleIdentifier }
 }
 
+@MainActor
 struct LLMSettingsView: View {
     @Bindable var viewModel: LLMSettingsViewModel
 

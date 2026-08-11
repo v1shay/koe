@@ -14,6 +14,7 @@ import SwiftUI
 /// ("Clear…") — VoiceOver users hear the row title via the surrounding
 /// `rowText`, but their cursor still lands on the button alone, so the button
 /// needs to read as a complete instruction in isolation.
+@MainActor
 struct SettingsDestructiveButton: View {
     let title: String
     let accessibilityLabelOverride: String?

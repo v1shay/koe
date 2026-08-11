@@ -1,5 +1,6 @@
 import SwiftUI
 
+@MainActor
 struct LabsBadge: View {
     static let message = "This is under active development and testing and may change before stable release."
 
@@ -25,6 +26,7 @@ struct LabsBadge: View {
     }
 }
 
+@MainActor
 struct LabsNotice: View {
     var body: some View {
         HStack(alignment: .firstTextBaseline, spacing: DesignSystem.Spacing.sm) {

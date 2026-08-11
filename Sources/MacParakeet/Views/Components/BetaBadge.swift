@@ -1,5 +1,6 @@
 import SwiftUI
 
+@MainActor
 struct BetaBadge: View {
     static let message = "This feature depends on macOS Now Playing support and may vary by media app."
 

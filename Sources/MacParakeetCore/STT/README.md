@@ -10,6 +10,14 @@
 > WhisperKit is optional for broad language coverage; Cohere Transcribe is an
 > opt-in batch-only accuracy engine.
 
+Xcode 15.4 compatibility builds keep Parakeet (v3, v2, and Unified) plus
+Cohere. Their manifest defines `MACPARAKEET_XCODE15_COMPAT`, omits WhisperKit
+and the two Nemotron implementations whose current dependency graphs require
+Swift 6/Xcode 16, and supplies fail-fast Nemotron compatibility types so shared
+runtime and persisted-data code remains source compatible. Settings and the
+menu bar use `SpeechEnginePreference.availableCases`, and persisted unavailable
+choices fall back to Parakeet. Xcode 16+ builds include every engine above.
+
 ## Entry point
 
 `STTScheduler` — the public actor every feature submits work to.

@@ -44,6 +44,17 @@ public enum SpeechEnginePreference: String, CaseIterable, Codable, Sendable {
     public static let defaultWhisperModelVariant = WhisperModelVariant.largeV3Turbo632MB.rawValue
     public static let defaultNemotronModelVariant: NemotronModelVariant = .multilingual1120
 
+    /// Engines compiled into this toolchain build. Xcode 15.4 cannot expose
+    /// WhisperKit's Swift-6-only dependency graph or FluidAudio's stateful
+    /// Nemotron managers, but keeps the Parakeet and Cohere local paths.
+    public static var availableCases: [SpeechEnginePreference] {
+        #if MACPARAKEET_XCODE15_COMPAT
+        [.parakeet, .cohere]
+        #else
+        allCases
+        #endif
+    }
+
     public var displayName: String {
         switch self {
         case .parakeet:
@@ -72,7 +83,8 @@ public enum SpeechEnginePreference: String, CaseIterable, Codable, Sendable {
 
     public static func current(defaults: UserDefaults = .standard) -> SpeechEnginePreference {
         guard let rawValue = defaults.string(forKey: defaultsKey),
-              let preference = SpeechEnginePreference(rawValue: rawValue) else {
+              let preference = SpeechEnginePreference(rawValue: rawValue),
+              availableCases.contains(preference) else {
             return .parakeet
         }
         return preference
@@ -91,7 +103,8 @@ public enum SpeechEnginePreference: String, CaseIterable, Codable, Sendable {
 
     public static func transcription(defaults: UserDefaults = .standard) -> SpeechEnginePreference {
         guard let rawValue = defaults.string(forKey: transcriptionDefaultsKey),
-            let preference = SpeechEnginePreference(rawValue: rawValue)
+            let preference = SpeechEnginePreference(rawValue: rawValue),
+            availableCases.contains(preference)
         else {
             return current(defaults: defaults)
         }

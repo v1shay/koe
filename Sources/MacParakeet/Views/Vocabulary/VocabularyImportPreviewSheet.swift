@@ -4,6 +4,7 @@ import MacParakeetViewModels
 
 /// Modal preview shown after the user picks a JSON file. Shows counts, conflicts,
 /// and lets the user pick a policy before committing.
+@MainActor
 struct VocabularyImportPreviewSheet: View {
     @Bindable var viewModel: VocabularyBackupViewModel
     let preview: VocabularyImportExportService.ImportPreview

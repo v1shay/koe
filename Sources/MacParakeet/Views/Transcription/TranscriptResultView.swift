@@ -122,6 +122,7 @@ struct MeetingTimedTranscriptRecoveryBannerPresentation: Equatable {
     }
 }
 
+@MainActor
 struct TranscriptResultView: View {
     let transcription: Transcription
     @Bindable var viewModel: TranscriptionViewModel
@@ -3725,6 +3726,7 @@ struct TranscriptResultView: View {
     }
 }
 
+@MainActor
 private struct EngineOptionCard: View {
     let selection: SpeechEngineSelection
     let nemotronVariant: NemotronModelVariant
@@ -3916,6 +3918,7 @@ private struct EngineOptionCard: View {
     }
 }
 
+@MainActor
 private struct EngineBadge: View {
     let text: String
     let tint: Color

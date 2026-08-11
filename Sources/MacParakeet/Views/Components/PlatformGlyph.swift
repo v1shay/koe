@@ -8,6 +8,7 @@ import MacParakeetCore
 /// to brand color on recognition. A `nil` (or asset-less) platform renders a neutral
 /// hand-drawn globe ("any website"). Vector + template means the mark is crisp at any
 /// size and the orbit moves it as a layer transform — no per-frame re-rasterization.
+@MainActor
 struct PlatformGlyph: View {
     let platform: MediaPlatform?
     var color: Color = .primary
@@ -29,6 +30,7 @@ struct PlatformGlyph: View {
 }
 
 /// Neutral "any website" mark for unrecognized links. Hand-drawn (no brand asset).
+@MainActor
 private struct GenericGlobe: View {
     var color: Color
 

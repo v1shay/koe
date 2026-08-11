@@ -5,6 +5,7 @@ import SwiftUI
 
 /// Section header above a group of meeting rows. Apple Notes / Mail pattern:
 /// small, all-caps, tertiary color, generous top padding.
+@MainActor
 struct MeetingDateGroupHeader: View {
     let group: TranscriptionDateGroup
     var calendar: Calendar = .autoupdatingCurrent
@@ -59,6 +60,7 @@ struct MeetingDateGroupHeader: View {
 
 /// Hairline divider used between meeting rows inside a date group. 1px, low
 /// opacity — readable but never visually heavy.
+@MainActor
 struct MeetingRowHairline: View {
     var body: some View {
         Rectangle()

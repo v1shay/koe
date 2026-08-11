@@ -1,5 +1,6 @@
 import SwiftUI
 
+@MainActor
 struct LoadingCaptionView: View {
     let caption: DictationOverlayViewModel.ProcessingLoadCaption
 

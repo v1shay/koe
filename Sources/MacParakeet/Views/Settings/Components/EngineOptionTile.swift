@@ -8,6 +8,7 @@ import SwiftUI
 /// renders display state (status pill + label) — actionable affordances like
 /// Download / Retry live outside the tile (see `EngineDownloadBanner`) so we
 /// never nest one Button inside another, which is unreliable on macOS SwiftUI.
+@MainActor
 struct EngineOptionTile: View {
     enum SelectionRole: Equatable {
         case live
@@ -309,6 +310,7 @@ struct EngineOptionTile: View {
 /// failed. Lives outside the tiles so the tile root can stay a clean
 /// `Button` (no nested-button hit testing). Compact full-width row: model
 /// description on the left, mode-specific affordance on the right.
+@MainActor
 struct EngineDownloadBanner: View {
     enum Mode: Equatable {
         case download           // first-run / not downloaded

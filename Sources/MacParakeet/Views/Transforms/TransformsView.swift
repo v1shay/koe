@@ -13,6 +13,7 @@ import MacParakeetViewModels
 /// screenshots), warm coral accent only on the keycap badges + primary
 /// CTAs, generous whitespace, hover lift on cards via the existing
 /// `cardRest`/`cardHover` shadow tokens.
+@MainActor
 struct TransformsView: View {
     @Bindable var viewModel: TransformsViewModel
     let reservedHotkeys: [TransformShortcutReservedHotkey]
@@ -358,6 +359,7 @@ struct TransformsView: View {
 
 // MARK: - Transform history
 
+@MainActor
 private struct TransformHistoryEmptyState: View {
     var body: some View {
         HStack(spacing: DesignSystem.Spacing.md) {
@@ -387,6 +389,7 @@ private struct TransformHistoryEmptyState: View {
     }
 }
 
+@MainActor
 private struct TransformHistoryNoResultsState: View {
     let query: String
     let onClear: () -> Void
@@ -424,6 +427,7 @@ private struct TransformHistoryNoResultsState: View {
     }
 }
 
+@MainActor
 private struct TransformHistorySearchField: View {
     @Binding var text: String
 
@@ -461,6 +465,7 @@ private struct TransformHistorySearchField: View {
     }
 }
 
+@MainActor
 private struct TransformHistoryRow: View {
     private static let todayTimeFormat = Date.FormatStyle(date: .omitted, time: .shortened)
     private static let dateTimeFormat = Date.FormatStyle(date: .numeric, time: .shortened)
@@ -649,6 +654,7 @@ private struct TransformHistoryRow: View {
 
 }
 
+@MainActor
 private struct TransformHistorySectionLabel: View {
     let title: String
 
@@ -663,6 +669,7 @@ private struct TransformHistorySectionLabel: View {
     }
 }
 
+@MainActor
 private struct TransformHistoryMetaStrip: View {
     let llmDuration: String
     let totalDuration: String
@@ -675,6 +682,7 @@ private struct TransformHistoryMetaStrip: View {
     }
 }
 
+@MainActor
 private struct TransformHistoryMetaChip: View {
     let systemImage: String
     let text: String
@@ -694,6 +702,7 @@ private struct TransformHistoryMetaChip: View {
     }
 }
 
+@MainActor
 private struct TransformHistoryCopyButton: View {
     enum Prominence {
         case primary
@@ -820,6 +829,7 @@ private struct TransformHistoryCopyButton: View {
     }
 }
 
+@MainActor
 private struct TransformHistoryIconButton: View {
     let systemImage: String
     let color: Color
@@ -868,6 +878,7 @@ private extension TransformHistoryEntry {
 
 // MARK: - Transform card
 
+@MainActor
 private struct TransformCard: View {
     let transform: Prompt
     let onEdit: () -> Void
@@ -993,6 +1004,7 @@ private struct TransformCard: View {
 
 // MARK: - Create-your-own tile
 
+@MainActor
 private struct CreateYourOwnTile: View {
     let action: () -> Void
     @State private var isHovered = false
@@ -1030,6 +1042,7 @@ private struct CreateYourOwnTile: View {
 
 // MARK: - Keycap badge
 
+@MainActor
 struct KeycapBadge: View {
     let shortcut: TransformShortcut
 
@@ -1081,6 +1094,7 @@ struct KeycapBadge: View {
     }
 }
 
+@MainActor
 private struct UnboundShortcutChip: View {
     var body: some View {
         Text("No shortcut bound")

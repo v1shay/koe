@@ -3,6 +3,7 @@ import SwiftUI
 import MacParakeetCore
 import MacParakeetViewModels
 
+@MainActor
 struct DictationStatsView: View {
     @Bindable var viewModel: DictationHistoryViewModel
 
@@ -247,6 +248,7 @@ struct DictationStatsView: View {
 
 // MARK: - Hero Stat Tile
 
+@MainActor
 private struct HeroStatTile: View {
     let label: String
     let value: String
@@ -316,6 +318,7 @@ private struct HeroStatTile: View {
 
 // MARK: - Streak Heatmap
 
+@MainActor
 struct StreakHeatmap: View {
     let days: [DailyDictationStat]
 
@@ -600,6 +603,7 @@ struct StreakHeatmap: View {
 
 // MARK: - Heatmap Tooltip
 
+@MainActor
 private struct HeatmapTooltipView: View {
     let stat: DailyDictationStat
 
@@ -644,6 +648,7 @@ private struct HeatmapTooltipView: View {
 
 // MARK: - Top App Row
 
+@MainActor
 private struct TopAppRow: View {
     let entry: DictationHistoryViewModel.TopAppEntry
     let percentOfMax: Double
@@ -771,6 +776,7 @@ private struct TopAppRow: View {
 /// `HeatmapTooltipView`'s chrome (regularMaterial + thin border + shadow,
 /// rounded-design typography) so the two hover surfaces feel like one
 /// design system.
+@MainActor
 private struct TopAppHoverDetail: View {
     let entry: DictationHistoryViewModel.TopAppEntry
     let resolved: String

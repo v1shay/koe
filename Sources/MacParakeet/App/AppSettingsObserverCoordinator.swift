@@ -79,21 +79,23 @@ final class AppSettingsObserverCoordinator {
         observerTokens.append(notificationCenter.addObserver(
             forName: .macParakeetOpenOnboarding, object: nil, queue: .main
         ) { [weak self] _ in
-            Task { @MainActor in self?.onOpenOnboarding() }
+            guard let coordinator = self else { return }
+            Task { @MainActor in coordinator.onOpenOnboarding() }
         })
 
         observerTokens.append(notificationCenter.addObserver(
             forName: .macParakeetOpenSettings, object: nil, queue: .main
         ) { [weak self] notification in
             let tab = Self.settingsTab(from: notification)
-            Task { @MainActor in self?.onOpenSettings(tab) }
+            guard let coordinator = self else { return }
+            Task { @MainActor in coordinator.onOpenSettings(tab) }
         })
 
         for (name, invoke) in Self.plainChannels {
             let token = notificationCenter.addObserver(forName: name, object: nil, queue: .main) { [weak self] _ in
+                guard let coordinator = self else { return }
                 Task { @MainActor in
-                    guard let self else { return }
-                    invoke(self)
+                    invoke(coordinator)
                 }
             }
             observerTokens.append(token)

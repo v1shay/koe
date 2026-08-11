@@ -1311,8 +1311,9 @@ private actor MeetingRecordingServiceSpy: MeetingRecordingServiceProtocol {
         let continuationID = UUID()
         captureFailureContinuations[continuationID] = continuation
         continuation.onTermination = { [weak self] _ in
+            guard let capture = self else { return }
             Task {
-                await self?.removeCaptureFailureContinuation(id: continuationID)
+                await capture.removeCaptureFailureContinuation(id: continuationID)
             }
         }
         return stream

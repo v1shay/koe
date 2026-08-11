@@ -3,6 +3,7 @@ import SwiftUI
 /// Exit animation when recording stops: Flower of Life accelerates and collapses,
 /// leaves detach and drift down, stem fades. Fires callback when collapse is done
 /// so the pill can transition to the merkaba processing spinner.
+@MainActor
 struct FlowerCompletionView: View {
     @Binding var stemCollapsed: Bool
     var onCollapseFinished: (() -> Void)?

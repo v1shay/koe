@@ -7,6 +7,7 @@ import SwiftUI
 /// Recording state: [ Press any key...   Cancel    ]  (highlighted border)
 /// With warning:    [ Space              Change... ]
 ///                    Warning text shown below.
+@MainActor
 struct HotkeyRecorderView: View {
     enum ModifierCaptureMode {
         case standard

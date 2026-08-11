@@ -6,6 +6,7 @@ import SwiftUI
 /// rows need a sibling visual, not the same metaphor: the faint stroke comes
 /// from the selected input text, and the stronger stroke comes from the
 /// rewritten result. The same saved run always produces the same sigil.
+@MainActor
 struct TransformSigilView: View {
     let data: TransformSigilData
     var size: CGFloat = 32

@@ -21,6 +21,7 @@ import SwiftUI
 /// as the menubar's tested target. Default size here is 18pt to land on the
 /// known-good rung; consumers can request smaller, but expect quality to
 /// drop quickly below 14pt.
+@MainActor
 struct BreathWaveLogo: View {
     var size: CGFloat = 18
     var tint: Color = DesignSystem.Colors.accent

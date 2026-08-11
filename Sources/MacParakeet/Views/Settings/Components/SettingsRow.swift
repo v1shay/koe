@@ -7,6 +7,7 @@ import SwiftUI
 /// Replaces the inline `settingsToggleRow(...)` helper in the old Settings
 /// view, generalised so the same primitive serves all rows (toggle, picker,
 /// hotkey recorder, status chip).
+@MainActor
 struct SettingsRow<Trailing: View>: View {
     let title: String
     let detail: String
@@ -49,6 +50,7 @@ struct SettingsRow<Trailing: View>: View {
 /// VoiceOver reads the row as one element ("Save dictation history,
 /// switch, off"). The visible title is the toggle's accessibility label
 /// so the toggle isn't an orphaned "switch, off" announcement.
+@MainActor
 struct SettingsToggleRow: View {
     let title: String
     let detail: String
@@ -95,6 +97,7 @@ struct SettingsToggleRow: View {
     }
 }
 
+#if compiler(>=6.0)
 #Preview("Light", traits: .fixedLayout(width: 560, height: 320)) {
     @Previewable @State var toggleOn = true
     @Previewable @State var toggleOff = false
@@ -153,3 +156,4 @@ struct SettingsToggleRow: View {
     .background(DesignSystem.Colors.cardBackground)
     .preferredColorScheme(.dark)
 }
+#endif

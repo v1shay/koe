@@ -55,6 +55,7 @@ enum SidebarItem: String, CaseIterable, Identifiable {
     /// It renders as a pinned card below the sidebar list via `safeAreaInset`.
 }
 
+@MainActor
 struct MainWindowView: View {
     @Bindable var state: MainWindowState
     @State private var showGlobalCancelConfirmation = false
@@ -442,6 +443,7 @@ struct MainWindowView: View {
     }
 }
 
+@MainActor
 private struct TransformEditorSheetHost: View {
     @State private var editorViewModel: TransformEditorViewModel
 
@@ -483,6 +485,7 @@ private struct TransformEditorSheetHost: View {
     }
 }
 
+@MainActor
 private struct SidebarItemLabel: View {
     let item: SidebarItem
 

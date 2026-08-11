@@ -3,6 +3,7 @@ import XCTest
 @testable import MacParakeet
 @testable import MacParakeetCore
 
+@MainActor
 final class HotkeyRecorderViewTests: XCTestCase {
     func testStandardBareModifierCaptureRecordsPhysicalModifierSide() {
         let candidate = HotkeyRecorderView.bareModifierTrigger(

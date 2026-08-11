@@ -2,6 +2,7 @@ import SwiftUI
 
 /// 14-bar waveform visualization driven by audio level.
 /// Thin, airy bars with subtle opacity — premium feel without visual weight.
+@MainActor
 struct WaveformView: View {
     let audioLevel: Float
     var barCount: Int = 14

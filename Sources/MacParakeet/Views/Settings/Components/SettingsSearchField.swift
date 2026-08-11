@@ -15,6 +15,7 @@ import AppKit
 /// Wiring is intentionally minimal in this primitive — it owns no search
 /// index. The parent (`SettingsRootViewModel`) owns the query string and
 /// reacts to changes.
+@MainActor
 struct SettingsSearchField: View {
     @Binding var query: String
     @FocusState.Binding var isFocused: Bool
@@ -125,6 +126,7 @@ private struct InitialFocusBlocker: NSViewRepresentable {
     }
 }
 
+#if compiler(>=6.0)
 #Preview("Light", traits: .fixedLayout(width: 480, height: 100)) {
     @Previewable @State var query = ""
     @FocusState var focus: Bool
@@ -144,3 +146,4 @@ private struct InitialFocusBlocker: NSViewRepresentable {
         .background(DesignSystem.Colors.background)
         .preferredColorScheme(.dark)
 }
+#endif

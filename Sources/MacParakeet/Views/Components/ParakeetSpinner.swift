@@ -5,6 +5,7 @@ import SwiftUI
 /// Wraps the existing compact Merkaba loader so new waiting states inherit the
 /// same sacred-geometry motion language as the dictation overlay, meeting pill,
 /// and Transform progress surfaces.
+@MainActor
 struct ParakeetSpinner: View {
     enum SizePreset {
         case inline

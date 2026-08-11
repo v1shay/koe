@@ -6,6 +6,7 @@ import SwiftUI
 /// `MerkabaPillIcon`) sits inside a coral ring that sweeps over the countdown —
 /// the ring *is* the timer, so there's no separate progress bar. Lives top-right
 /// (ADR-017 / ADR-020 §10, reused by ADR-023).
+@MainActor
 struct MeetingCountdownToastView: View {
     @Bindable var viewModel: MeetingCountdownToastViewModel
     /// Dismissive action — Cancel. Bound to `.escape`.

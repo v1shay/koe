@@ -133,6 +133,7 @@ private func identifySpeakerTurns(_ turns: [SpeakerTurn]) -> [IdentifiedSpeakerT
     }
 }
 
+@MainActor
 struct TranscriptTimestampedContentView<SpeakerLabelContent: View>: View {
     let hasSpeakers: Bool
     let identifiedTurnCards: [IdentifiedSpeakerTurn]
@@ -212,6 +213,7 @@ private func timestampScrollAnchor(startMs: Int) -> some View {
         .accessibilityHidden(true)
 }
 
+@MainActor
 private struct TranscriptTurnCardView<SpeakerLabelContent: View>: View {
     let speakerID: String
     let speakerLabel: String
@@ -318,6 +320,7 @@ private struct TranscriptTurnCardView<SpeakerLabelContent: View>: View {
 /// hover-revealed actions (play-from-here, copy, copy-with-timestamp). Shared by
 /// both the flat segment list and the speaker-turn cards so the affordances stay
 /// identical across modes.
+@MainActor
 private struct TranscriptSegmentRow: View {
     let startMs: Int
     let text: String
@@ -434,6 +437,7 @@ private struct TranscriptSegmentRow: View {
     }
 }
 
+@MainActor
 private struct TranscriptTimestampChip: View {
     let startMs: Int
     let label: String

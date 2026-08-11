@@ -4,6 +4,7 @@ import UniformTypeIdentifiers
 import MacParakeetCore
 import MacParakeetViewModels
 
+@MainActor
 struct FeedbackView: View {
     @Bindable var viewModel: FeedbackViewModel
 
