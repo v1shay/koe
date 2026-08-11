@@ -736,6 +736,13 @@ public final class LLMSettingsViewModel {
         // Restore the routing preferences to their defaults so a config
         // clear returns the formatter to a fully predictable state.
         aiFormatterEnabledForDictation = true
+        // `didSet` intentionally ignores equal assignments. Persist the
+        // default explicitly as clearing an untouched configuration must also
+        // materialize the setting for other runtime preference readers.
+        defaults.set(
+            true,
+            forKey: UserDefaultsAppRuntimePreferences.aiFormatterEnabledForDictationKey
+        )
         aiFormatterEnabledForTranscriptions = true
         autoGenerateMeetingTitles = true
         draft = .defaults(

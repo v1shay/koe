@@ -110,6 +110,7 @@ final class LLMSettingsViewModelTests: XCTestCase {
     func testAIFormatterEnabledForDictationPersistsThroughInjectedDefaults() {
         let key = UserDefaultsAppRuntimePreferences.aiFormatterEnabledForDictationKey
 
+        viewModel.aiFormatterEnabledForDictation = false
         viewModel.aiFormatterEnabledForDictation = true
 
         XCTAssertEqual(defaults.object(forKey: key) as? Bool, true)
