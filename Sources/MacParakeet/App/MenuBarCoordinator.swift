@@ -17,8 +17,10 @@ final class MenuBarCoordinator: NSObject, NSMenuDelegate {
     private let meetingRecordingActiveProvider: () -> Bool
     private let liveMeetingPanelAvailableProvider: () -> Bool
     private let dictationCaptureActiveProvider: () -> Bool
+    private let speechEngineSettingsProvider: () -> EngineSettingsViewModel
     private let onOpenMainWindow: () -> Void
     private let onOpenSettings: () -> Void
+    private let onOpenEngineSettings: () -> Void
     private let onNavigate: (SidebarItem) -> Void
     private let onNewTranscription: () -> Void
     private let onStartDictation: () -> Void
@@ -41,6 +43,10 @@ final class MenuBarCoordinator: NSObject, NSMenuDelegate {
     private var transcribeFileMenuItems: [NSMenuItem] = []
     private var transcribeYouTubeMenuItems: [NSMenuItem] = []
     private var hotkeyMenuItem: NSMenuItem?
+    private var speechModelMenuItem: NSMenuItem?
+    private var iconAnimationTimer: Timer?
+    private var iconAnimationFrame = 0
+    private var iconState: BreathWaveIcon.MenuBarState = .idle
     /// "Cohere Language ▸" submenu — only shown while Cohere is the active engine
     /// (Cohere has no auto-detect, so the language must be chosen).
     private var cohereLanguageMenuItem: NSMenuItem?
@@ -50,6 +56,13 @@ final class MenuBarCoordinator: NSObject, NSMenuDelegate {
         let recordingEnabled: Bool
         let openLiveMeetingPanelHidden: Bool
         let openLiveMeetingPanelEnabled: Bool
+    }
+
+    struct SpeechModelMenuRow: Equatable {
+        let engine: SpeechEnginePreference
+        let title: String
+        let isSelected: Bool
+        let isEnabled: Bool
     }
 
     init(
@@ -64,8 +77,10 @@ final class MenuBarCoordinator: NSObject, NSMenuDelegate {
         meetingRecordingActiveProvider: @escaping () -> Bool,
         liveMeetingPanelAvailableProvider: @escaping () -> Bool,
         dictationCaptureActiveProvider: @escaping () -> Bool,
+        speechEngineSettingsProvider: @escaping () -> EngineSettingsViewModel,
         onOpenMainWindow: @escaping () -> Void,
         onOpenSettings: @escaping () -> Void,
+        onOpenEngineSettings: @escaping () -> Void,
         onNavigate: @escaping (SidebarItem) -> Void,
         onNewTranscription: @escaping () -> Void,
         onStartDictation: @escaping () -> Void,
@@ -86,8 +101,10 @@ final class MenuBarCoordinator: NSObject, NSMenuDelegate {
         self.meetingRecordingActiveProvider = meetingRecordingActiveProvider
         self.liveMeetingPanelAvailableProvider = liveMeetingPanelAvailableProvider
         self.dictationCaptureActiveProvider = dictationCaptureActiveProvider
+        self.speechEngineSettingsProvider = speechEngineSettingsProvider
         self.onOpenMainWindow = onOpenMainWindow
         self.onOpenSettings = onOpenSettings
+        self.onOpenEngineSettings = onOpenEngineSettings
         self.onNavigate = onNavigate
         self.onNewTranscription = onNewTranscription
         self.onStartDictation = onStartDictation
@@ -121,6 +138,56 @@ final class MenuBarCoordinator: NSObject, NSMenuDelegate {
             openLiveMeetingPanelHidden: !isMeetingRecordingActive,
             openLiveMeetingPanelEnabled: environmentReady && canOpenLiveMeetingPanel
         )
+    }
+
+    static func speechModelMenuRows(
+        engine settings: EngineSettingsViewModel
+    ) -> [SpeechModelMenuRow] {
+        let selected = settings.speechEnginePreference
+        let canSwitch = !settings.speechEngineSwitching
+            && settings.speechEngineSwitchAvailability == .available
+        let parakeetVariant = settings.parakeetModelVariant
+        let nemotronVariant = settings.nemotronModelVariant
+        let whisperName = SpeechEnginePreference.friendlyVariantName(
+            settings.whisperModelVariant.rawValue
+        )
+
+        func row(
+            _ engine: SpeechEnginePreference,
+            title: String,
+            downloaded: Bool
+        ) -> SpeechModelMenuRow {
+            let isSelected = selected == engine
+            return SpeechModelMenuRow(
+                engine: engine,
+                title: downloaded || isSelected ? title : "\(title) — Not downloaded",
+                isSelected: isSelected,
+                isEnabled: canSwitch && (downloaded || isSelected)
+            )
+        }
+
+        return [
+            row(
+                .parakeet,
+                title: parakeetVariant.modelName,
+                downloaded: settings.downloadedParakeetVariants.contains(parakeetVariant)
+            ),
+            row(
+                .nemotron,
+                title: nemotronVariant.modelName,
+                downloaded: settings.downloadedNemotronVariants.contains(nemotronVariant)
+            ),
+            row(
+                .whisper,
+                title: "Whisper \(whisperName)",
+                downloaded: settings.isWhisperModelDownloaded
+            ),
+            row(
+                .cohere,
+                title: "Cohere Transcribe",
+                downloaded: settings.isCohereModelDownloaded && settings.cohereMeetsMemoryRequirement
+            ),
+        ]
     }
 
     func setupMainMenu() {
@@ -329,7 +396,7 @@ final class MenuBarCoordinator: NSObject, NSMenuDelegate {
         guard let statusItem,
               let button = statusItem.button else { return }
 
-        button.image = BreathWaveIcon.menuBarIcon(pointSize: 18)
+        updateIcon(state: .idle)
 
         let dropView = MenuBarDropView(frame: button.bounds)
         dropView.onDrop = { [weak self] urls in
@@ -452,6 +519,11 @@ final class MenuBarCoordinator: NSObject, NSMenuDelegate {
 
         menu.addItem(NSMenuItem.separator())
 
+        let speechModelItem = NSMenuItem(title: "Speech Model", action: nil, keyEquivalent: "")
+        speechModelItem.submenu = NSMenu(title: "Speech Model")
+        menu.addItem(speechModelItem)
+        speechModelMenuItem = speechModelItem
+
         let cohereLanguageItem = NSMenuItem(title: "Cohere Language", action: nil, keyEquivalent: "")
         let cohereLanguageSubmenu = NSMenu()
         for language in CohereTranscribeEngine.supportedLanguages {
@@ -534,6 +606,44 @@ final class MenuBarCoordinator: NSObject, NSMenuDelegate {
         updateCohereLanguageMenu()
     }
 
+    @objc private func selectSpeechModel(_ sender: NSMenuItem) {
+        guard let rawValue = sender.representedObject as? String,
+              let preference = SpeechEnginePreference(rawValue: rawValue) else { return }
+        let engine = speechEngineSettingsProvider()
+        guard engine.speechEnginePreference != preference else { return }
+        engine.speechEnginePreference = preference
+        rebuildSpeechModelSubmenu()
+    }
+
+    private func rebuildSpeechModelSubmenu() {
+        guard let item = speechModelMenuItem else { return }
+        let engine = speechEngineSettingsProvider()
+        let submenu = NSMenu(title: "Speech Model")
+
+        for row in Self.speechModelMenuRows(engine: engine) {
+            let modelItem = NSMenuItem(
+                title: row.title,
+                action: #selector(selectSpeechModel(_:)),
+                keyEquivalent: ""
+            )
+            modelItem.target = self
+            modelItem.representedObject = row.engine.rawValue
+            modelItem.state = row.isSelected ? .on : .off
+            modelItem.isEnabled = row.isEnabled
+            submenu.addItem(modelItem)
+        }
+
+        submenu.addItem(.separator())
+        let manageItem = NSMenuItem(
+            title: "Manage Models...",
+            action: #selector(showEngineSettings),
+            keyEquivalent: ""
+        )
+        manageItem.target = self
+        submenu.addItem(manageItem)
+        item.submenu = submenu
+    }
+
     func refreshMeetingHotkeyShortcut() {
         recordMeetingMenuItems.forEach { applyChordShortcut(meetingHotkeyTriggerProvider(), to: $0) }
     }
@@ -556,7 +666,38 @@ final class MenuBarCoordinator: NSObject, NSMenuDelegate {
     }
 
     func updateIcon(state: BreathWaveIcon.MenuBarState) {
-        statusItem?.button?.image = BreathWaveIcon.menuBarIcon(pointSize: 18, state: state)
+        guard iconState != state || statusItem?.button?.image == nil else { return }
+        iconState = state
+        iconAnimationFrame = 0
+        iconAnimationTimer?.invalidate()
+        iconAnimationTimer = nil
+        renderIconFrame()
+
+        guard BreathWaveIcon.menuBarAnimationFrameCount(for: state) > 1,
+              !NSWorkspace.shared.accessibilityDisplayShouldReduceMotion else { return }
+
+        let timer = Timer.scheduledTimer(withTimeInterval: 0.16, repeats: true) { [weak self] _ in
+            Task { @MainActor in
+                self?.advanceIconAnimation()
+            }
+        }
+        RunLoop.main.add(timer, forMode: .common)
+        iconAnimationTimer = timer
+    }
+
+    private func advanceIconAnimation() {
+        iconAnimationFrame = (iconAnimationFrame + 1)
+            % BreathWaveIcon.menuBarAnimationFrameCount(for: iconState)
+        renderIconFrame()
+    }
+
+    private func renderIconFrame() {
+        statusItem?.button?.image = BreathWaveIcon.menuBarIcon(
+            pointSize: 18,
+            state: iconState,
+            frame: iconAnimationFrame
+        )
+        statusItem?.button?.toolTip = "声 — \(iconState.accessibilityLabel)"
     }
 
     @objc private func showAboutPanel() {
@@ -576,6 +717,10 @@ final class MenuBarCoordinator: NSObject, NSMenuDelegate {
     // which would trigger automatic gear SF Symbol decoration on the menu item.
     @objc private func showSettingsWindow() {
         onOpenSettings()
+    }
+
+    @objc private func showEngineSettings() {
+        onOpenEngineSettings()
     }
 
     @objc private func showTranscribe() {
@@ -620,7 +765,7 @@ final class MenuBarCoordinator: NSObject, NSMenuDelegate {
     }
 
     @objc private func openGitHub() {
-        openExternalURL("https://github.com/moona3k/macparakeet")
+        openExternalURL("https://github.com/v1shay/koe")
     }
 
     @objc private func quitApp() {
@@ -734,6 +879,10 @@ final class MenuBarCoordinator: NSObject, NSMenuDelegate {
         openLiveMeetingPanelMenuItem?.isEnabled = meetingPresentation.openLiveMeetingPanelEnabled
 
         updateCohereLanguageMenu()
+        if menu === statusItem?.menu {
+            speechEngineSettingsProvider().refreshModelStatus()
+            rebuildSpeechModelSubmenu()
+        }
 
         guard let env = environmentProvider() else {
             pasteLastMenuItem?.isEnabled = false

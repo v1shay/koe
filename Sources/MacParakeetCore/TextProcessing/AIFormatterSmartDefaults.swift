@@ -92,11 +92,12 @@ public enum AIFormatterSmartDefaults {
                 1. Add punctuation and capitalization.
                 2. Keep the wording conversational and concise.
                 3. Preserve the speaker's tone, intent, slang, names, and product terms.
-                4. Remove repeated words and filler sounds when unnecessary.
-                5. Do not make the message formal unless the speaker clearly dictated formal wording.
-                6. Do not add greetings, sign-offs, emojis, bullets, or extra context unless spoken.
-                7. Do not summarize, shorten aggressively, or add content.
-                8. Output only the final message.
+                4. Resolve spoken self-corrections by keeping the speaker's final intended wording and removing abandoned wording and cues such as "actually", "no", "I mean", or "rather".
+                5. Remove repeated words and filler sounds when unnecessary.
+                6. Do not make the message formal unless the speaker clearly dictated formal wording.
+                7. Do not add greetings, sign-offs, emojis, bullets, or extra context unless spoken.
+                8. Do not summarize, shorten aggressively, or add content.
+                9. Output only the final message.
 
                 Raw transcript:
                 {{TRANSCRIPT}}
@@ -116,10 +117,11 @@ public enum AIFormatterSmartDefaults {
                 3. Keep the speaker's meaning, tone, and wording as close as possible.
                 4. Make the text professional but not stiff.
                 5. Fix obvious speech-to-text errors.
-                6. Remove repeated words and filler sounds when unnecessary.
-                7. Do not add a subject, greeting, sign-off, recipient, or facts unless spoken.
-                8. Do not summarize, shorten aggressively, or add content.
-                9. Output only the final email text.
+                6. Resolve spoken self-corrections by keeping the speaker's final intended wording and removing abandoned wording and correction cues.
+                7. Remove repeated words and filler sounds when unnecessary.
+                8. Do not add a subject, greeting, sign-off, recipient, or facts unless spoken.
+                9. Do not summarize, shorten aggressively, or add content.
+                10. Output only the final email text.
 
                 Raw transcript:
                 {{TRANSCRIPT}}
@@ -138,10 +140,11 @@ public enum AIFormatterSmartDefaults {
                 2. Keep the wording natural, with readable sentences and paragraphs for longer passages.
                 3. Preserve names, URLs, search terms, quoted text, numbers, and product terms.
                 4. Fix obvious speech-to-text errors.
-                5. Remove repeated words and filler sounds when unnecessary.
-                6. Do not add markdown, bullets, greetings, or sign-offs unless spoken.
-                7. Do not summarize, shorten aggressively, or add content.
-                8. Output only the final text.
+                5. Resolve spoken self-corrections by keeping the speaker's final intended wording and removing abandoned wording and correction cues.
+                6. Remove repeated words and filler sounds when unnecessary.
+                7. Do not add markdown, bullets, greetings, or sign-offs unless spoken.
+                8. Do not summarize, shorten aggressively, or add content.
+                9. Output only the final text.
 
                 Raw transcript:
                 {{TRANSCRIPT}}
@@ -162,9 +165,10 @@ public enum AIFormatterSmartDefaults {
                 4. Use bullets only when the speaker is clearly listing items.
                 5. Preserve names, tasks, decisions, dates, and product terms.
                 6. Fix obvious speech-to-text errors.
-                7. Remove repeated words and filler sounds when unnecessary.
-                8. Do not summarize, reorganize heavily, or add content.
-                9. Output only the final notes.
+                7. Resolve spoken self-corrections by keeping the speaker's final intended wording and removing abandoned wording and correction cues.
+                8. Remove repeated words and filler sounds when unnecessary.
+                9. Do not summarize, reorganize heavily, or add content.
+                10. Output only the final notes.
 
                 Raw transcript:
                 {{TRANSCRIPT}}
@@ -185,9 +189,10 @@ public enum AIFormatterSmartDefaults {
                 4. Improve readability without changing the substance.
                 5. Preserve names, terms, citations, numbers, and quoted text.
                 6. Fix obvious speech-to-text errors.
-                7. Remove repeated words and filler sounds when unnecessary.
-                8. Do not summarize, shorten aggressively, or add content.
-                9. Output only the final document text.
+                7. Resolve spoken self-corrections by keeping the speaker's final intended wording and removing abandoned wording and correction cues.
+                8. Remove repeated words and filler sounds when unnecessary.
+                9. Do not summarize, shorten aggressively, or add content.
+                10. Output only the final document text.
 
                 Raw transcript:
                 {{TRANSCRIPT}}
@@ -207,10 +212,11 @@ public enum AIFormatterSmartDefaults {
                 3. Do not autocorrect technical tokens into ordinary words.
                 4. Keep snippets, issue names, API names, and filenames intact.
                 5. Fix obvious speech-to-text errors only when the intended technical term is clear.
-                6. Remove repeated words and filler sounds when unnecessary.
-                7. Do not add markdown formatting, code fences, explanations, or extra context unless spoken.
-                8. Do not summarize, shorten aggressively, or add content.
-                9. Output only the final text.
+                6. Resolve spoken self-corrections by keeping the final intended technical wording and removing only clearly abandoned wording and correction cues.
+                7. Remove repeated words and filler sounds when unnecessary.
+                8. Do not add markdown formatting, code fences, explanations, or extra context unless spoken.
+                9. Do not summarize, shorten aggressively, or add content.
+                10. Output only the final text.
 
                 Raw transcript:
                 {{TRANSCRIPT}}
@@ -229,9 +235,10 @@ public enum AIFormatterSmartDefaults {
                 2. Do not expand, explain, or rewrite commands.
                 3. Do not add markdown, code fences, bullets, or commentary.
                 4. Fix obvious speech-to-text errors only when the intended shell token is clear.
-                5. Remove filler words that are not part of the intended command or prose.
-                6. Do not summarize, shorten aggressively, or add content.
-                7. Output only the final command or terminal text.
+                5. Resolve spoken self-corrections only when the final intended command token or prose is clear; remove the abandoned wording and correction cue.
+                6. Remove filler words that are not part of the intended command or prose.
+                7. Do not summarize, shorten aggressively, or add content.
+                8. Output only the final command or terminal text.
 
                 Raw transcript:
                 {{TRANSCRIPT}}

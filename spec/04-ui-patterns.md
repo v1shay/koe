@@ -561,7 +561,10 @@ During concurrent dictation + meeting recording:
 - Meeting panel stays open and continues showing live preview
 - Dictation overlay appears/disappears independently
 - Both pills are visible simultaneously
-- Menu bar icon follows priority: meeting > dictation > file transcription > idle
+- Menu bar icon follows priority: meeting > dictation > file transcription > idle.
+  The idle frame is a pixel winky face; recording/listening uses a four-frame
+  waveform and processing/thinking uses a four-frame thought animation. Reduce
+  Motion keeps the first meaningful frame static.
 
 ---
 
@@ -581,6 +584,9 @@ During concurrent dictation + meeting recording:
 │  ├─ interview.mp3  (2m ago)   │
 │  ├─ podcast-ep42.m4a  (1h)   │
 │  └─ lecture-notes.wav  (3d)   │
+│  Speech Model             ►    │
+│  ├─ Parakeet TDT v3       ✓    │
+│  └─ Manage Models...           │
 ├────────────────────────────────┤
 │  Settings...           ⌘,     │
 │  Quit MacParakeet      ⌘Q     │
@@ -591,9 +597,10 @@ During concurrent dictation + meeting recording:
 
 ### Menu Bar Icon
 
-- **Idle:** Parrot outline (SF Symbol or custom asset), 18x18pt
-- **Recording:** Parrot with red dot badge
-- **Processing:** Parrot with spinner indicator
+- **Idle:** Pixel winky face, 18x18pt
+- **Recording/listening:** Four-frame pixel waveform animation
+- **Processing/thinking:** Four-frame eye-and-thought-dot animation
+- **Reduce Motion:** Static first frame for recording and processing
 
 ### Behavior
 
@@ -601,6 +608,7 @@ During concurrent dictation + meeting recording:
 - The menu bar icon is always visible when the app is running
 - "Recent Transcriptions" submenu shows last 5 transcriptions with relative timestamps
 - Clicking a recent transcription opens the main window to that transcription's detail
+- "Speech Model" switches among installed local engines without opening the main window; unavailable downloads are labeled and disabled, and **Manage Models...** opens Engine settings
 
 ---
 
