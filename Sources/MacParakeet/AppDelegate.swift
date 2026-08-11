@@ -151,6 +151,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         },
         onCompleted: { [weak self] in
             guard let self, let env = self.appEnvironment else { return }
+            self.settingsViewModel.enableLaunchAtLoginAfterOnboardingIfNeeded()
             self.scheduleDeferredSpeechPreWarm(environment: env)
         },
         onHotkeyPreviewArm: { [weak self] in
@@ -264,11 +265,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         dictationCaptureActiveProvider: { [weak self] in
             self?.dictationFlowCoordinator?.isCapturingAudio == true
         },
+        speechEngineSettingsProvider: { [settingsViewModel] in
+            settingsViewModel.engine
+        },
         onOpenMainWindow: { [weak self] in
             self?.windowCoordinator.openMainWindow()
         },
         onOpenSettings: { [weak self] in
             self?.windowCoordinator.openMainWindowToSettings()
+        },
+        onOpenEngineSettings: { [weak self] in
+            self?.windowCoordinator.openMainWindowToSettings(tab: .engine)
         },
         onNavigate: { [weak self] item in
             self?.mainWindowState.navigate(to: item)

@@ -420,9 +420,9 @@ public final class LLMSettingsViewModel {
 
     /// Whether the AI Formatter also runs on live dictation. Transcript
     /// formatting has its own routing toggle; dictation remains the
-    /// latency-sensitive opt-in path. The value persists immediately through
-    /// the injected `defaults` store. Default `false` keeps live dictation
-    /// low-latency unless the user opts in. See issue #408.
+    /// latency-sensitive path. The value persists immediately through the
+    /// injected `defaults` store. The Voice Flow profile defaults it on when a
+    /// provider is configured; users can still opt out for minimum latency.
     public var aiFormatterEnabledForDictation: Bool {
         didSet {
             guard aiFormatterEnabledForDictation != oldValue else { return }
@@ -735,7 +735,7 @@ public final class LLMSettingsViewModel {
         defaults.set(AIFormatter.defaultPromptTemplate, forKey: UserDefaultsAppRuntimePreferences.aiFormatterPromptKey)
         // Restore the routing preferences to their defaults so a config
         // clear returns the formatter to a fully predictable state.
-        aiFormatterEnabledForDictation = false
+        aiFormatterEnabledForDictation = true
         aiFormatterEnabledForTranscriptions = true
         autoGenerateMeetingTitles = true
         draft = .defaults(
@@ -1340,7 +1340,7 @@ public final class LLMSettingsViewModel {
     }
 
     private static func loadStoredAIFormatterEnabledForDictation(from defaults: UserDefaults) -> Bool {
-        defaults.object(forKey: UserDefaultsAppRuntimePreferences.aiFormatterEnabledForDictationKey) as? Bool ?? false
+        defaults.object(forKey: UserDefaultsAppRuntimePreferences.aiFormatterEnabledForDictationKey) as? Bool ?? true
     }
 
     private static func loadStoredAIFormatterEnabledForTranscriptions(from defaults: UserDefaults) -> Bool {

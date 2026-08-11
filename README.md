@@ -2,7 +2,7 @@
   <img src="Assets/AppIcon-1024x1024.png" width="128" height="128" alt="MacParakeet app icon">
 </p>
 
-<h1 align="center">MacParakeet</h1>
+<h1 align="center">声 — Voice Flow for Mac</h1>
 
 <p align="center">
   Fast, private, local-first voice app for Apple Silicon Macs. Free and open-source.
@@ -25,7 +25,7 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-GPL--3.0-blue.svg" alt="GPL-3.0 License"></a>
   <img src="https://img.shields.io/badge/macOS-14.2%2B-000000.svg" alt="macOS 14.2+">
   <img src="https://img.shields.io/badge/Swift-6.0-F05138.svg" alt="Swift 6">
-  <a href="https://github.com/moona3k/macparakeet/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/moona3k/macparakeet/ci.yml?branch=main&label=CI" alt="CI status"></a>
+  <a href="https://github.com/v1shay/koe/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/v1shay/koe/ci.yml?branch=main&label=CI" alt="CI status"></a>
   <img src="https://img.shields.io/badge/Apple%20Silicon-only-333333.svg" alt="Apple Silicon only">
 </p>
 
@@ -54,6 +54,39 @@
 </p>
 
 ---
+
+## 声 profile
+
+This repository is a focused Voice Flow profile built on the open-source
+[MacParakeet](https://github.com/moona3k/macparakeet) engine. It keeps the
+upstream local STT, paste, permissions, model, and CLI architecture while
+making the dictation-first behavior the default:
+
+- hold `Fn` to listen, release to transcribe, clean, and paste into the focused field
+- launch as a menu-bar-only companion and register launch-at-login after onboarding
+- request Microphone and Accessibility once during the upfront setup flow
+- show a pixel winky face while ready, an animated waveform while listening,
+  and animated thought dots while processing
+- switch among installed local speech engines directly from the menu bar;
+  use **Manage Models...** or the CLI for downloads and per-engine variants
+- run deterministic cleanup by default; when an AI provider is configured,
+  dictation formatting is on by default and resolves filler, obvious STT errors,
+  and spoken revisions such as “5 p.m.—actually, no, I mean 7 p.m.”
+
+Speech recognition remains on-device. For fully local AI cleanup, configure an
+Ollama or LM Studio model in **Settings → AI**. The AI formatter falls back to
+the deterministic result if the local provider is unavailable, so dictation
+and paste still complete. As with every global hotkey app, the process must be
+running; launch-at-login is what makes it available without manually opening it.
+
+Quick source-build verification:
+
+```bash
+swift test
+swift run macparakeet-cli health --json
+swift run macparakeet-cli models list
+scripts/dev/run_app.sh
+```
 
 MacParakeet combines system-wide dictation, file/media transcription, and meeting recording in one local-first app, with optional selected-text Transforms and agent automation through `macparakeet-cli`. Parakeet v3 is the standard-path local speech engine; locale-aware first-run setup selects WhisperKit instead when the Mac has no preferred English language and prefers Korean, Japanese, Chinese, or Cantonese. Parakeet v2/Unified, Nemotron Beta, Cohere Transcribe, and WhisperKit remain selectable local choices for different language, latency, timestamp, and accuracy needs. Version 0.7.3 adds System Default microphone-routing repair, separate live/final speech-engine routes, bounded meeting-capture lifecycle handling, meeting auto-save feedback, and bundled CLI 3.0. All speech recognition happens on your Mac; networked AI features are separate and opt-in.
 
@@ -159,8 +192,8 @@ model cache as the app.
 **Build from source:**
 
 ```bash
-git clone https://github.com/moona3k/macparakeet.git
-cd macparakeet
+git clone https://github.com/v1shay/koe.git
+cd koe
 swift test
 scripts/dev/run_app.sh    # build, sign, launch
 ```

@@ -4,6 +4,18 @@ import XCTest
 @testable import MacParakeetCore
 
 final class AppRuntimePreferencesTests: XCTestCase {
+    func testVoiceFlowDefaultsUseCleanDictationAndMenuBarOnlyMode() {
+        let suite = "voice-flow-defaults-\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suite)!
+        defer { defaults.removePersistentDomain(forName: suite) }
+
+        XCTAssertEqual(
+            UserDefaultsAppRuntimePreferences(defaults: defaults).processingMode,
+            .clean
+        )
+        XCTAssertTrue(AppPreferences.isMenuBarOnlyModeEnabled(defaults: defaults))
+    }
+
     private func makePreferences() -> UserDefaultsAppRuntimePreferences {
         UserDefaultsAppRuntimePreferences(
             defaults: UserDefaults(suiteName: "app-runtime-prefs-\(UUID().uuidString)")!
@@ -464,16 +476,16 @@ final class AppRuntimePreferencesTests: XCTestCase {
         XCTAssertEqual(UserDefaultsAppRuntimePreferences(defaults: defaults).dictationPreviewTextSize, .medium)
     }
 
-    func testAIFormatterEnabledForDictationDefaultsToFalseAndReadsPersistedValue() {
+    func testAIFormatterEnabledForDictationDefaultsToTrueAndReadsPersistedValue() {
         let suite = "app-runtime-prefs-\(UUID().uuidString)"
         let defaults = UserDefaults(suiteName: suite)!
         defer { defaults.removePersistentDomain(forName: suite) }
 
-        XCTAssertFalse(UserDefaultsAppRuntimePreferences(defaults: defaults).aiFormatterEnabledForDictation)
-
-        defaults.set(true, forKey: UserDefaultsAppRuntimePreferences.aiFormatterEnabledForDictationKey)
-
         XCTAssertTrue(UserDefaultsAppRuntimePreferences(defaults: defaults).aiFormatterEnabledForDictation)
+
+        defaults.set(false, forKey: UserDefaultsAppRuntimePreferences.aiFormatterEnabledForDictationKey)
+
+        XCTAssertFalse(UserDefaultsAppRuntimePreferences(defaults: defaults).aiFormatterEnabledForDictation)
     }
 
     func testAIFormatterEnabledForTranscriptionsDefaultsToTrueAndReadsPersistedValue() {

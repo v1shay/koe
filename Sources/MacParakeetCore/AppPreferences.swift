@@ -10,7 +10,7 @@ public enum AppPreferences {
     }
 
     public static func isMenuBarOnlyModeEnabled(defaults: UserDefaults = .standard) -> Bool {
-        defaults.object(forKey: menuBarOnlyModeKey) as? Bool ?? false
+        defaults.object(forKey: menuBarOnlyModeKey) as? Bool ?? true
     }
 
     public static func isTelemetryEnabled(defaults: UserDefaults = .standard) -> Bool {

@@ -34,6 +34,8 @@ public final class SettingsViewModel {
     }
 
     public static let systemDefaultMicrophoneSelection = "__system_default__"
+    public static let didConfigureLaunchAtLoginAfterOnboardingKey =
+        "didConfigureLaunchAtLoginAfterOnboarding"
     private static let microphoneTestSilenceThreshold: Float = 0.01
     public let engine: EngineSettingsViewModel
 
@@ -1166,6 +1168,19 @@ public final class SettingsViewModel {
         launchAtLoginError = nil
     }
 
+    /// Makes the menu-bar companion persistent after the one-time onboarding
+    /// flow. The marker is written only after macOS reports the login item as
+    /// enabled (including the requires-approval state), so unsigned dev builds
+    /// and transient service failures can retry on a later launch.
+    public func enableLaunchAtLoginAfterOnboardingIfNeeded() {
+        guard !defaults.bool(forKey: Self.didConfigureLaunchAtLoginAfterOnboardingKey),
+              launchAtLoginService != nil else { return }
+        launchAtLogin = true
+        if launchAtLogin {
+            defaults.set(true, forKey: Self.didConfigureLaunchAtLoginAfterOnboardingKey)
+        }
+    }
+
     public func refreshPermissions() {
         refreshMicrophoneDevices()
         Task {
@@ -1694,7 +1709,7 @@ public final class SettingsViewModel {
 
     private static func normalizedProcessingMode(_ rawValue: String?) -> String {
         guard let rawValue, Dictation.ProcessingMode(rawValue: rawValue) != nil else {
-            return Dictation.ProcessingMode.raw.rawValue
+            return Dictation.ProcessingMode.clean.rawValue
         }
         return rawValue
     }

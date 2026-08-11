@@ -576,7 +576,7 @@ public final class UserDefaultsAppRuntimePreferences: AppRuntimePreferencesProto
 
     public var processingMode: Dictation.ProcessingMode {
         let raw = defaults.string(forKey: Self.processingModeKey)
-        return Dictation.ProcessingMode(rawValue: raw ?? Dictation.ProcessingMode.raw.rawValue) ?? .raw
+        return Dictation.ProcessingMode(rawValue: raw ?? Dictation.ProcessingMode.clean.rawValue) ?? .clean
     }
 
     public var dictationInsertionStyle: DictationInsertionStyle {
@@ -636,9 +636,10 @@ public final class UserDefaultsAppRuntimePreferences: AppRuntimePreferencesProto
     /// global `aiFormatterEnabled` switch so users can keep AI formatting for
     /// long-form file/meeting transcripts while keeping dictation low-latency
     /// (the LLM round-trip is the dominant cost on short utterances). Defaults
-    /// to `false`; the dictation gate is the logical AND of both flags.
+    /// to `true` in the voice-flow profile; the dictation gate is still the
+    /// logical AND of both flags, so no provider means no model call.
     public var aiFormatterEnabledForDictation: Bool {
-        defaults.object(forKey: Self.aiFormatterEnabledForDictationKey) as? Bool ?? false
+        defaults.object(forKey: Self.aiFormatterEnabledForDictationKey) as? Bool ?? true
     }
 
     /// Whether the AI Formatter runs on file/meeting transcripts. Defaults to

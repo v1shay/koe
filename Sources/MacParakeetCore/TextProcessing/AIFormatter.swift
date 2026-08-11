@@ -44,11 +44,12 @@ public enum AIFormatter {
         5. For medium-length monologues, favor multiple paragraphs over one dense block when the ideas naturally separate.
         6. Use real paragraph breaks in the cleaned text. If you need a new paragraph, put it in the text itself instead of writing the characters \\n.
         7. Fix obvious speech-to-text errors.
-        8. Remove repeated words and filler sounds when unnecessary.
-        9. Keep the original meaning, tone, and wording as close as possible.
-        10. Do not summarize, shorten, or add content.
-        11. Do not explain your edits.
-        12. Output only the final cleaned text.
+        8. Resolve spoken self-corrections: when the speaker revises a phrase with cues such as "actually", "no", "I mean", or "rather", keep the final intended wording and remove the abandoned wording and correction cue.
+        9. Remove repeated words and filler sounds when unnecessary.
+        10. Keep the original meaning, tone, and wording as close as possible.
+        11. Do not summarize, shorten, or add content.
+        12. Do not explain your edits.
+        13. Output only the final cleaned text.
 
         Raw transcript:
         {{TRANSCRIPT}}

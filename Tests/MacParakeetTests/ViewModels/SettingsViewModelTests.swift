@@ -209,7 +209,7 @@ final class SettingsViewModelTests: XCTestCase {
 
     func testDefaultValues() {
         XCTAssertFalse(viewModel.launchAtLogin, "launchAtLogin should default to false")
-        XCTAssertFalse(viewModel.menuBarOnlyMode, "menuBarOnlyMode should default to false")
+        XCTAssertTrue(viewModel.menuBarOnlyMode, "Voice Flow should default to a menu-bar-only companion")
         XCTAssertEqual(viewModel.appAppearanceMode, .system, "appAppearanceMode should default to System")
         XCTAssertTrue(viewModel.showIdlePill, "showIdlePill should default to true")
         XCTAssertFalse(viewModel.silenceAutoStop, "silenceAutoStop should default to false")
@@ -849,6 +849,43 @@ final class SettingsViewModelTests: XCTestCase {
         XCTAssertNil(viewModel.launchAtLoginError)
     }
 
+    func testOnboardingCompletionEnablesLaunchAtLoginOnce() {
+        viewModel.configure(
+            permissionService: mockPermissions,
+            dictationRepo: mockRepo,
+            entitlementsService: entitlements,
+            launchAtLoginService: mockLaunchAtLogin,
+            checkoutURL: nil
+        )
+
+        viewModel.enableLaunchAtLoginAfterOnboardingIfNeeded()
+        viewModel.enableLaunchAtLoginAfterOnboardingIfNeeded()
+
+        XCTAssertEqual(mockLaunchAtLogin.setEnabledCalls, [true])
+        XCTAssertTrue(viewModel.launchAtLogin)
+        XCTAssertTrue(testDefaults.bool(
+            forKey: SettingsViewModel.didConfigureLaunchAtLoginAfterOnboardingKey
+        ))
+    }
+
+    func testOnboardingLaunchAtLoginRetriesWhenRegistrationFails() {
+        mockLaunchAtLogin.errorToThrow = LaunchAtLoginError.invalidSignature
+        viewModel.configure(
+            permissionService: mockPermissions,
+            dictationRepo: mockRepo,
+            entitlementsService: entitlements,
+            launchAtLoginService: mockLaunchAtLogin,
+            checkoutURL: nil
+        )
+
+        viewModel.enableLaunchAtLoginAfterOnboardingIfNeeded()
+
+        XCTAssertFalse(viewModel.launchAtLogin)
+        XCTAssertFalse(testDefaults.bool(
+            forKey: SettingsViewModel.didConfigureLaunchAtLoginAfterOnboardingKey
+        ))
+    }
+
     func testSettingLaunchAtLoginRevertsAndShowsErrorWhenServiceFails() {
         mockLaunchAtLogin.errorToThrow = LaunchAtLoginError.invalidSignature
 
@@ -1235,9 +1272,9 @@ final class SettingsViewModelTests: XCTestCase {
         XCTAssertEqual(testDefaults.string(forKey: "processingMode"), Dictation.ProcessingMode.clean.rawValue)
     }
 
-    func testInvalidProcessingModeFallsBackToRaw() {
+    func testInvalidProcessingModeFallsBackToClean() {
         viewModel.processingMode = "invalid-mode"
-        XCTAssertEqual(viewModel.processingMode, Dictation.ProcessingMode.raw.rawValue)
+        XCTAssertEqual(viewModel.processingMode, Dictation.ProcessingMode.clean.rawValue)
     }
 
     // MARK: - Permissions

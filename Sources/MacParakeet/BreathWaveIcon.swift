@@ -22,89 +22,98 @@ enum BreathWaveIcon {
     // Stroke width: 7 (large), 10 (small/menu bar)
 
     /// Menu bar icon state variants.
-    enum MenuBarState {
+    enum MenuBarState: Equatable {
         case idle
         case recording
         case processing
+
+        var accessibilityLabel: String {
+            switch self {
+            case .idle: "Ready"
+            case .recording: "Listening"
+            case .processing: "Thinking"
+            }
+        }
     }
 
-    /// Load the parakeet silhouette as a **template** NSImage for menu bar use.
-    /// The image is stored as a processed SwiftPM resource (menubar-icon.png / @2x).
-    /// Template images adapt to light/dark mode automatically.
-    static func menuBarIcon(pointSize: CGFloat = 18, state: MenuBarState = .idle) -> NSImage {
-        let baseIcon = loadBaseMenuBarIcon(pointSize: pointSize)
-
+    /// Number of distinct frames used by each menu-bar state. Kept as a pure
+    /// helper so the animation contract is cheap to regression-test.
+    static func menuBarAnimationFrameCount(for state: MenuBarState) -> Int {
         switch state {
-        case .idle:
-            return baseIcon
-        case .recording:
-            return compositeIcon(base: baseIcon, pointSize: pointSize, badgeColor: .systemRed)
-        case .processing:
-            return compositeIcon(base: baseIcon, pointSize: pointSize, badgeColor: .systemOrange)
+        case .idle: 1
+        case .recording, .processing: 4
         }
     }
 
-    private static func loadBaseMenuBarIcon(pointSize: CGFloat) -> NSImage {
-        // Try loading from SwiftPM resource bundle first, then fall back to main bundle.
-        if let url = Bundle.module.url(forResource: "menubar-icon@2x", withExtension: "png"),
-           let image = NSImage(contentsOf: url) {
-            image.size = NSSize(width: pointSize, height: pointSize)
-            image.isTemplate = true
-            return image
-        }
-
-        // Fallback: 1x version
-        if let url = Bundle.module.url(forResource: "menubar-icon", withExtension: "png"),
-           let image = NSImage(contentsOf: url) {
-            image.size = NSSize(width: pointSize, height: pointSize)
-            image.isTemplate = true
-            return image
-        }
-
-        // Last resort: return a system symbol
-        let fallback = NSImage(systemSymbolName: "waveform", accessibilityDescription: "MacParakeet")
-            ?? NSImage()
-        fallback.size = NSSize(width: pointSize, height: pointSize)
-        fallback.isTemplate = true
-        return fallback
-    }
-
-    /// Composite the base icon with a colored status dot in the bottom-right corner.
-    /// The resulting image is NOT a template (so the dot renders in color).
-    /// The base icon is drawn using the menu bar's label color so it matches
-    /// the idle template appearance in both light and dark mode.
-    private static func compositeIcon(base: NSImage, pointSize: CGFloat, badgeColor: NSColor) -> NSImage {
+    /// Pixel-art status face used by the always-present menu-bar companion.
+    /// Idle is a winky face; listening animates a tiny waveform; thinking
+    /// animates a three-dot thought trail. Template rendering keeps every frame
+    /// legible in light, dark, tinted, and high-contrast menu bars.
+    static func menuBarIcon(
+        pointSize: CGFloat = 18,
+        state: MenuBarState = .idle,
+        frame: Int = 0
+    ) -> NSImage {
         let size = NSSize(width: pointSize, height: pointSize)
         let image = NSImage(size: size, flipped: false) { rect in
-            // Use the base icon alpha channel as a mask, filled with the menu bar
-            // foreground color. This replicates template-image rendering while keeping
-            // isTemplate=false so the colored dot isn't tinted by the system.
-            // NSStatusBar items use controlTextColor which is white on dark menu bars
-            // and black on light ones (pre-Sonoma or accessibility settings).
-            if let cgBase = base.cgImage(forProposedRect: nil, context: nil, hints: nil),
-               let ctx = NSGraphicsContext.current?.cgContext {
-                ctx.saveGState()
-                ctx.clip(to: rect, mask: cgBase)
-                NSColor.controlTextColor.setFill()
-                ctx.fill(rect)
-                ctx.restoreGState()
+            NSColor.black.setFill()
+            let scale = rect.width / 18
+            func pixel(_ x: CGFloat, _ y: CGFloat, _ width: CGFloat = 1, _ height: CGFloat = 1) {
+                NSBezierPath(rect: NSRect(
+                    x: (x * scale).rounded(.down),
+                    y: (y * scale).rounded(.down),
+                    width: max(scale, (width * scale).rounded(.up)),
+                    height: max(scale, (height * scale).rounded(.up))
+                )).fill()
             }
 
-            // Draw colored dot (bottom-right, 5pt diameter)
-            let dotSize: CGFloat = 5
-            let dotRect = NSRect(
-                x: rect.maxX - dotSize - 0.5,
-                y: 0.5,
-                width: dotSize,
-                height: dotSize
-            )
-            badgeColor.setFill()
-            NSBezierPath(ovalIn: dotRect).fill()
+            // Chunky, open-corner face outline.
+            pixel(5, 15, 8, 1)
+            pixel(3, 13, 2, 1)
+            pixel(13, 13, 2, 1)
+            pixel(2, 6, 1, 7)
+            pixel(15, 6, 1, 7)
+            pixel(3, 4, 2, 1)
+            pixel(13, 4, 2, 1)
+
+            let normalizedFrame = abs(frame) % menuBarAnimationFrameCount(for: state)
+            switch state {
+            case .idle:
+                // One bright eye, one wink, and a crooked pixel smile.
+                pixel(5, 10, 2, 2)
+                pixel(10, 10, 3, 1)
+                pixel(6, 7)
+                pixel(7, 6, 4, 1)
+                pixel(11, 7)
+
+            case .recording:
+                pixel(5, 11, 2, 1)
+                pixel(11, 11, 2, 1)
+                let patterns: [[CGFloat]] = [
+                    [2, 4, 6, 3, 2],
+                    [3, 6, 3, 5, 2],
+                    [5, 3, 2, 6, 3],
+                    [2, 5, 4, 3, 6],
+                ]
+                for (index, height) in patterns[normalizedFrame].enumerated() {
+                    pixel(CGFloat(4 + index * 2), 5, 1, height)
+                }
+
+            case .processing:
+                // Eyes glance side to side while the emphasized thought dot
+                // walks across the bottom of the face.
+                let glance = normalizedFrame == 1 || normalizedFrame == 2 ? CGFloat(1) : 0
+                pixel(5 + glance, 10, 1, 2)
+                pixel(11 + glance, 10, 1, 2)
+                for index in 0..<3 {
+                    pixel(CGFloat(6 + index * 3), 6, 1, index == normalizedFrame % 3 ? 2 : 1)
+                }
+            }
 
             return true
         }
-        // NOT a template — the dot must render in color
-        image.isTemplate = false
+        image.accessibilityDescription = state.accessibilityLabel
+        image.isTemplate = true
         return image
     }
 

@@ -103,8 +103,8 @@ final class LLMSettingsViewModelTests: XCTestCase {
 
     // MARK: - AI Formatter: dictation routing toggle (#408)
 
-    func testAIFormatterEnabledForDictationDefaultsToFalse() {
-        XCTAssertFalse(viewModel.aiFormatterEnabledForDictation)
+    func testAIFormatterEnabledForDictationDefaultsToTrue() {
+        XCTAssertTrue(viewModel.aiFormatterEnabledForDictation)
     }
 
     func testAIFormatterEnabledForDictationPersistsThroughInjectedDefaults() {
@@ -195,12 +195,12 @@ final class LLMSettingsViewModelTests: XCTestCase {
 
         viewModel.clearConfiguration()
 
-        XCTAssertFalse(viewModel.aiFormatterEnabledForDictation)
+        XCTAssertTrue(viewModel.aiFormatterEnabledForDictation)
         XCTAssertEqual(
             defaults.object(
                 forKey: UserDefaultsAppRuntimePreferences.aiFormatterEnabledForDictationKey
             ) as? Bool,
-            false
+            true
         )
     }
 
@@ -1361,7 +1361,7 @@ final class LLMSettingsViewModelTests: XCTestCase {
         )
         XCTAssertEqual(
             defaults.object(forKey: UserDefaultsAppRuntimePreferences.aiFormatterEnabledForDictationKey) as? Bool,
-            false
+            true
         )
         XCTAssertTrue(viewModel.aiFormatterEnabled)
     }
@@ -1380,7 +1380,7 @@ final class LLMSettingsViewModelTests: XCTestCase {
         )
         XCTAssertEqual(
             defaults.object(forKey: UserDefaultsAppRuntimePreferences.aiFormatterEnabledForDictationKey) as? Bool,
-            false
+            true
         )
         XCTAssertTrue(viewModel.aiFormatterEnabled)
     }
