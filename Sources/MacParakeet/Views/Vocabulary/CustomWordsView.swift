@@ -2,6 +2,7 @@ import SwiftUI
 import MacParakeetCore
 import MacParakeetViewModels
 
+@MainActor
 struct CustomWordsView: View {
     @Bindable var viewModel: CustomWordsViewModel
     var recognitionStatus: CustomVocabularyBoostingSupportPresentation

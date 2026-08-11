@@ -2,6 +2,29 @@ import XCTest
 @testable import MacParakeetCore
 
 final class SpeechEnginePreferenceTests: XCTestCase {
+    func testAvailableEnginesMatchCompiledToolchain() {
+        #if MACPARAKEET_XCODE15_COMPAT
+        XCTAssertEqual(SpeechEnginePreference.availableCases, [.parakeet, .cohere])
+        #else
+        XCTAssertEqual(SpeechEnginePreference.availableCases, SpeechEnginePreference.allCases)
+        #endif
+    }
+
+    func testUnavailablePersistedEnginesFallBackToParakeet() throws {
+        #if MACPARAKEET_XCODE15_COMPAT
+        let (defaults, suite) = makeIsolatedDefaults()
+        defer { defaults.removePersistentDomain(forName: suite) }
+
+        SpeechEnginePreference.whisper.save(to: defaults)
+        SpeechEnginePreference.nemotron.saveForTranscriptions(to: defaults)
+
+        XCTAssertEqual(SpeechEnginePreference.current(defaults: defaults), .parakeet)
+        XCTAssertEqual(SpeechEnginePreference.transcription(defaults: defaults), .parakeet)
+        #else
+        throw XCTSkip("All persisted engines are compiled into this toolchain build")
+        #endif
+    }
+
     func testFriendlyVariantNameMapsDefaultWhisperVariant() {
         let raw = SpeechEnginePreference.defaultWhisperModelVariant
         XCTAssertEqual(SpeechEnginePreference.friendlyVariantName(raw), "Large v3 Turbo")

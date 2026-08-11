@@ -577,8 +577,9 @@ public actor MeetingRecordingService: MeetingRecordingServiceProtocol {
         let observerID = UUID()
         captureFailureObserverContinuations[sessionID, default: [:]][observerID] = continuation
         continuation.onTermination = { [weak self] _ in
+            guard let service = self else { return }
             Task {
-                await self?.removeCaptureFailureObserver(sessionID: sessionID, observerID: observerID)
+                await service.removeCaptureFailureObserver(sessionID: sessionID, observerID: observerID)
             }
         }
         return stream

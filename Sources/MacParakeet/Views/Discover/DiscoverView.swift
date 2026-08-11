@@ -3,6 +3,7 @@ import AppKit
 import MacParakeetCore
 import MacParakeetViewModels
 
+@MainActor
 struct DiscoverView: View {
     let viewModel: DiscoverViewModel
     let thoughtsService: DiscoverThoughtsServiceProtocol

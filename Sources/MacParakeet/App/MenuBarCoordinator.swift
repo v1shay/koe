@@ -187,7 +187,7 @@ final class MenuBarCoordinator: NSObject, NSMenuDelegate {
                 title: "Cohere Transcribe",
                 downloaded: settings.isCohereModelDownloaded && settings.cohereMeetsMemoryRequirement
             ),
-        ]
+        ].filter { SpeechEnginePreference.availableCases.contains($0.engine) }
     }
 
     func setupMainMenu() {
@@ -677,8 +677,9 @@ final class MenuBarCoordinator: NSObject, NSMenuDelegate {
               !NSWorkspace.shared.accessibilityDisplayShouldReduceMotion else { return }
 
         let timer = Timer.scheduledTimer(withTimeInterval: 0.16, repeats: true) { [weak self] _ in
+            guard let coordinator = self else { return }
             Task { @MainActor in
-                self?.advanceIconAnimation()
+                coordinator.advanceIconAnimation()
             }
         }
         RunLoop.main.add(timer, forMode: .common)

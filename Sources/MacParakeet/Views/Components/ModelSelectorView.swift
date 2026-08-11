@@ -1,5 +1,6 @@
 import SwiftUI
 
+@MainActor
 struct ModelSelectorView: View {
     let currentModel: String
     let displayName: String

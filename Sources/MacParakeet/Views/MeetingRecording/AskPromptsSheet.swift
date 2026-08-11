@@ -13,6 +13,7 @@ import MacParakeetViewModels
 ///   unbounded).
 /// - **ALL PROMPTS** — everything else; surfaces in the empty Ask state and
 ///   the sparkle popover.
+@MainActor
 struct AskPromptsSheet: View {
     @Environment(\.dismiss) private var dismiss
     @Bindable var viewModel: QuickPromptsViewModel
@@ -445,6 +446,7 @@ struct AskPromptsSheet: View {
 
 /// Edit-in-place sheet. Built-ins are editable here too — that is the
 /// intentional divergence from Prompt Library (where built-ins are read-only).
+@MainActor
 private struct EditPromptSheet: View {
     @Environment(\.dismiss) private var dismiss
     let initial: QuickPrompt
@@ -632,6 +634,7 @@ private struct EditPromptSheet: View {
     }
 }
 
+@MainActor
 private struct CreatePromptSheet: View {
     @Environment(\.dismiss) private var dismiss
     @Bindable var viewModel: QuickPromptsViewModel

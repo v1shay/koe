@@ -2,6 +2,7 @@ import SwiftUI
 import MacParakeetCore
 import MacParakeetViewModels
 
+@MainActor
 struct PromptLibraryView: View {
     @Environment(\.dismiss) private var dismiss
     @Bindable var viewModel: PromptsViewModel
@@ -563,6 +564,7 @@ struct PromptLibraryView: View {
     }
 }
 
+@MainActor
 struct AutoRunBadge: View {
     let isAutoRun: Bool
     let action: () -> Void

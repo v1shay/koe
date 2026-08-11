@@ -434,10 +434,11 @@ public actor MockSTTClient: STTClientProtocol, STTDictationPreviewTranscribing, 
 
         backgroundWarmUpTask = Task { [weak self] in
             guard let self else { return }
+            let client = self
             do {
-                try await self.warmUp { [weak self] progressMessage in
+                try await client.warmUp { progressMessage in
                     Task {
-                        await self?.setWarmUpState(
+                        await client.setWarmUpState(
                             .working(
                                 message: "Speech model: \(progressMessage)",
                                 progress: OnboardingProgressParser.parseProgressFraction(
@@ -447,11 +448,11 @@ public actor MockSTTClient: STTClientProtocol, STTDictationPreviewTranscribing, 
                         )
                     }
                 }
-                await self.setWarmUpState(.ready)
+                await client.setWarmUpState(.ready)
             } catch is CancellationError {
                 // Match STTRuntime: cancellation does not mutate the shared state machine.
             } catch {
-                await self.setWarmUpState(.failed(message: error.localizedDescription))
+                await client.setWarmUpState(.failed(message: error.localizedDescription))
             }
             await self.clearBackgroundWarmUpTask()
         }

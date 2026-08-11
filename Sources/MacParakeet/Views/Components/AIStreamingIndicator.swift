@@ -5,6 +5,7 @@ import SwiftUI
 ///
 /// Uses SwiftUI animations instead of a 30fps TimelineView — the 1.3Hz sine
 /// wave only needs ~2 animation interpolations, not 30 redraws per second.
+@MainActor
 struct AIStreamingIndicator: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var breathing = false
@@ -34,6 +35,7 @@ struct AIStreamingIndicator: View {
 /// Seed-of-life skeleton for the summary loading state.
 /// Uses the same slowly rotating flower as the meeting recording "listening" view,
 /// paired with the breathing orb indicator underneath for activity signal.
+@MainActor
 struct SummarySkeletonView: View {
     var body: some View {
         VStack(spacing: DesignSystem.Spacing.lg) {
@@ -49,6 +51,7 @@ struct SummarySkeletonView: View {
 /// A slow, intense light sweep loading indicator for chat.
 /// A prismatic light beam drifts left-to-right with a shifting warm hue,
 /// trailing a soft glow. Wider track, slow-motion pace.
+@MainActor
 struct ChatLoadingSweep: View {
     @State private var phase: CGFloat = -0.2
     @State private var hueRotation: Double = 0

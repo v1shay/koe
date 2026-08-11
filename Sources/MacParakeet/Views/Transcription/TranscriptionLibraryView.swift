@@ -3,6 +3,7 @@ import SwiftUI
 import MacParakeetCore
 import MacParakeetViewModels
 
+@MainActor
 struct TranscriptionLibraryView: View {
     @Bindable var viewModel: TranscriptionLibraryViewModel
     var title: String = "Library"
@@ -997,6 +998,7 @@ struct TranscriptionLibraryView: View {
 /// masquerades as the active filter. Owns its own `isHovered` so each chip in
 /// the `ForEach` tracks the cursor independently — matching the hover idiom used
 /// by the Browse Files and Start buttons.
+@MainActor
 private struct LibraryFilterChip: View {
     let filter: LibraryFilter
     let isSelected: Bool
@@ -1040,6 +1042,7 @@ private struct LibraryFilterChip: View {
 /// outline) because it's the single highest-priority action on the surface, and
 /// it carries the same hover idiom (scale + pointing-hand cursor) as the other
 /// polished buttons so the header reads as one system.
+@MainActor
 private struct LibraryPrimaryActionButton: View {
     let title: String
     let action: () -> Void
@@ -1077,6 +1080,7 @@ private struct LibraryPrimaryActionButton: View {
     }
 }
 
+@MainActor
 private struct LibrarySelectManyButton: View {
     let action: () -> Void
 

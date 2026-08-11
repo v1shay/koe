@@ -4,6 +4,7 @@ import MacParakeetCore
 import MacParakeetViewModels
 
 /// Video panel for the split-pane detail view. Shows AVPlayer, title, channel, and controls.
+@MainActor
 struct TranscriptionVideoPanel: View {
     let transcription: Transcription
     @Bindable var playerViewModel: MediaPlayerViewModel

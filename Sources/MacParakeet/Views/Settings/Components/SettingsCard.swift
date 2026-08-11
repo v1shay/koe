@@ -13,6 +13,7 @@ import SwiftUI
 /// Kept visually identical to the prior `SettingsCardContainer` so the
 /// foundation refactor introduces zero perceptual change. The status chip slot
 /// is purely additive — existing callers omit it and look identical.
+@MainActor
 struct SettingsCard<Content: View>: View {
     let title: String
     let subtitle: String

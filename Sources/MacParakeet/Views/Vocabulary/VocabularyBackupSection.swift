@@ -6,6 +6,7 @@ import UniformTypeIdentifiers
 
 /// "Backup & Restore" card that lives at the bottom of the Vocabulary panel.
 /// Surfaces export / import in plain sight — issue #67.
+@MainActor
 struct VocabularyBackupSection: View {
     @Bindable var viewModel: VocabularyBackupViewModel
     let wordCount: Int

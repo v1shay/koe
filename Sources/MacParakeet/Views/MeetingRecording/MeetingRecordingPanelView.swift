@@ -3,6 +3,7 @@ import MacParakeetCore
 import MacParakeetViewModels
 import SwiftUI
 
+@MainActor
 struct MeetingRecordingPanelView: View {
     @Bindable var viewModel: MeetingRecordingPanelViewModel
     @AppStorage(UserDefaultsAppRuntimePreferences.transcriptAIContextModeKey)
@@ -398,6 +399,7 @@ struct MeetingRecordingPanelView: View {
 /// as `MeetingsLiveStatusChip`: the coordinator's ~30 fps glow loop writes these
 /// levels, and with the read scoped here only this 20pt view re-renders — the
 /// transcript list stays put. The orb's own `.easeOut(0.12)` smooths each step.
+@MainActor
 private struct LiveAudioOrb: View {
     @Bindable var viewModel: MeetingRecordingPanelViewModel
 
@@ -414,6 +416,7 @@ private struct LiveAudioOrb: View {
 /// can't decay into a stale notification badge. Matches the brand-orange
 /// emphasis of the Ask tab when active; falls back to tertiary text color
 /// when the user is on a different tab so it reads as ambient, not loud.
+@MainActor
 private struct AskStreamingDot: View {
     let isActive: Bool
     @State private var animate = false
@@ -705,6 +708,7 @@ final class BreathingSeedOfLifeNSView: NSView {
 }
 
 /// Polished footer button with hover background and press feedback.
+@MainActor
 private struct FooterButton: View {
     let label: String
     let icon: String
@@ -751,6 +755,7 @@ private struct FooterButton: View {
 }
 
 /// Icon-only footer button with hover effect and instant custom tooltip.
+@MainActor
 private struct FooterIconButton: View {
     let icon: String
     var activeColor: Color?

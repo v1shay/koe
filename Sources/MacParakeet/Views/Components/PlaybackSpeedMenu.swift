@@ -1,6 +1,7 @@
 import SwiftUI
 import MacParakeetViewModels
 
+@MainActor
 struct PlaybackSpeedMenu: View {
     @Bindable var viewModel: MediaPlayerViewModel
 

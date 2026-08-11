@@ -9,6 +9,7 @@ import SwiftUI
 /// Start / Stop buttons fire the action. Mirrors the sibling YouTube
 /// card's "click the button, not the body" pattern, and gives Start and
 /// Stop symmetric tap targets so users learn one rule.
+@MainActor
 struct MeetingRecordingTile: View {
     enum PermissionState: Equatable {
         case ready(sourceMode: MeetingAudioSourceMode)
@@ -407,6 +408,7 @@ struct MeetingRecordingTile: View {
 /// and `StopConfirmCapsule` use — so the whole capture surface answers the
 /// cursor in one voice. The solid-red hover also pre-echoes the recording-state
 /// Stop pill, reinforcing that this is the record control.
+@MainActor
 private struct StartRecordingButton: View {
     var permissionState: MeetingRecordingTile.PermissionState
     var onTap: () -> Void
@@ -465,6 +467,7 @@ private struct StartRecordingButton: View {
 /// the tile button speaks the same color language as the panel header
 /// `PauseResumeButton`. Idle stays neutral so the row doesn't shout while at
 /// rest; the amber only declares intent on cursor approach.
+@MainActor
 private struct TilePauseResumeButton: View {
     var isPaused: Bool
     var onToggle: () -> Void
@@ -535,6 +538,7 @@ private struct TilePauseResumeButton: View {
 /// `StopRecordingButton` confirm UX with polish tuned for the larger,
 /// light-surface tile (white-on-red filled capsule rather than the pill's
 /// red-on-dark outline style).
+@MainActor
 private struct StopConfirmCapsule: View {
     var onStop: () -> Void
 
@@ -638,6 +642,7 @@ private struct StopConfirmCapsule: View {
 /// v0.6.14 meeting-recording CPU regression. The audio-reactive glow is the
 /// only live element, and it changes at most once per second (the pill poll is
 /// quantized upstream). See `plans/active/2026-05-meeting-recording-cpu-debug.md`.
+@MainActor
 private struct SacredFlowerTile: View {
     /// Drives only the glow intensity; the rosette geometry is static.
     var audioLevel: Float
@@ -743,6 +748,7 @@ private struct SacredFlowerTile: View {
 
 // MARK: - Recording dot (gentle breathing)
 
+@MainActor
 private struct BreathingDot: View {
     var body: some View {
         Circle()

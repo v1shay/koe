@@ -2,6 +2,7 @@ import SwiftUI
 
 /// The hero interaction — a warm card with merkaba that responds to file dragging.
 /// "Portal" effect: lifts, glows, particles drift on hover; contracts on file drop.
+@MainActor
 struct PortalDropZone: View {
     @Binding var isDragging: Bool
     let onDrop: ([NSItemProvider]) -> Bool

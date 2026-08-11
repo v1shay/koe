@@ -16,6 +16,7 @@ enum SacredGeometryPattern: String, CaseIterable {
 
 // MARK: - Pattern View
 
+@MainActor
 struct SacredGeometryView: View {
     let pattern: SacredGeometryPattern
     let size: CGFloat

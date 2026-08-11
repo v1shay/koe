@@ -6,25 +6,41 @@ import Foundation
 let skipWhisperKit = ProcessInfo.processInfo.environment["MACPARAKEET_SKIP_WHISPERKIT"] == "1"
 let enableMLXLocalLLM = ProcessInfo.processInfo.environment["MACPARAKEET_ENABLE_MLX_LOCAL_LLM"] == "1"
 
+#if compiler(<6.0)
+let xcode15Compatibility = true
+#else
+let xcode15Compatibility = false
+#endif
+
+let shouldSkipWhisperKit = skipWhisperKit || xcode15Compatibility
+
+let grdbDependency: Package.Dependency = xcode15Compatibility
+    ? .package(url: "https://github.com/groue/GRDB.swift", exact: "6.29.3")
+    : .package(url: "https://github.com/groue/GRDB.swift", from: "7.0.0")
+
 let packageDependencies: [Package.Dependency] = [
-    // GRDB for SQLite (dictation history + transcription records)
-    .package(url: "https://github.com/groue/GRDB.swift", from: "7.0.0"),
+    // GRDB 7 is Swift 6 language-mode clean, while GRDB 6 is the newest line
+    // whose package manifest remains compatible with Xcode 15.4.
+    grdbDependency,
     // FluidAudio for Parakeet and Nemotron STT on CoreML/ANE. Keep this exact
     // until MacParakeet migrates from DownloadUtils to the ModelHub API that
     // replaced it in the breaking 0.15.5 release.
-    .package(url: "https://github.com/FluidInference/FluidAudio", exact: "0.15.4"),
+    .package(
+        url: "https://github.com/v1shay/FluidAudio",
+        revision: "a710aa673a2dfbb7dae97e8d770d05d23ea9c603"
+    ),
     // ArgumentParser for CLI
     .package(url: "https://github.com/apple/swift-argument-parser", from: "1.3.0"),
     // Sparkle for auto-updates (non-App Store distribution)
     .package(url: "https://github.com/sparkle-project/Sparkle", from: "2.9.0"),
     // FluidAudio's Swift module exposes yyjson under current Xcode/Swift.
     .package(url: "https://github.com/ibireme/yyjson.git", exact: "0.12.0"),
+] + (shouldSkipWhisperKit ? [] : [
     // WhisperKit for multilingual STT fallback (Korean + 95 other languages).
-    // Argmax is not Swift 6 language-mode clean yet, so CI can omit this package
-    // as a target dependency for the first-party Swift 6 syntax/concurrency
-    // compile check without removing its lockfile pins.
+    // Its current swift-jinja dependency requires Swift tools 6.0, so Xcode
+    // 15.4 compatibility builds omit WhisperKit and use FluidAudio engines.
     .package(url: "https://github.com/argmaxinc/argmax-oss-swift", exact: "0.18.0")
-] + (enableMLXLocalLLM ? [
+]) + (enableMLXLocalLLM ? [
     // Opt-in only. mlx-swift-lm currently needs Swift tools 6.1 and Xcode-built
     // Metal shaders, so plain `swift build` / `swift test` / CI must not resolve it.
     .package(url: "https://github.com/ml-explore/mlx-swift-lm", exact: "3.31.4"),
@@ -42,13 +58,30 @@ let coreDependencies: [Target.Dependency] = [
     .product(name: "FluidAudio", package: "FluidAudio"),
     .product(name: "yyjson", package: "yyjson"),
     "MacParakeetObjCShims"
-] + (skipWhisperKit ? [] : [
+] + (shouldSkipWhisperKit ? [] : [
     .product(name: "WhisperKit", package: "argmax-oss-swift")
 ])
 
-let whisperKitSwiftSettings: [SwiftSetting] = skipWhisperKit ? [] : [
+let whisperKitSwiftSettings: [SwiftSetting] = shouldSkipWhisperKit ? [] : [
     .define("MACPARAKEET_HAS_WHISPERKIT")
 ]
+
+let compatibilitySwiftSettings: [SwiftSetting] = xcode15Compatibility ? [
+    .define("MACPARAKEET_XCODE15_COMPAT")
+] : []
+
+let coreExcludes = [
+    "Audio/README.md",
+    "Database/README.md",
+    "Licensing/README.md",
+    "Resources",
+    "Services/System/README.md",
+    "STT/README.md",
+    "TextProcessing/README.md",
+] + (xcode15Compatibility ? [
+    "STT/NemotronEngine.swift",
+    "STT/NemotronEnglishEngine.swift",
+] : [])
 
 let mlxLocalLLMSwiftSettings: [SwiftSetting] = enableMLXLocalLLM ? [
     .define("MACPARAKEET_HAS_MLX_LOCAL_LLM")
@@ -71,6 +104,15 @@ let appTestDependencies: [Target.Dependency] = [
     "MacParakeetLocalLLM"
 ] : [])
 
+// Apple's Swift Testing module ships with Xcode 16. Keep the XCTest suite
+// available on Xcode 15.4 while leaving these three Swift Testing files active
+// on newer toolchains.
+let appTestExcludes = xcode15Compatibility ? [
+    "Services/CLIOperationPrivacyTests.swift",
+    "Services/Telemetry/ObservabilityTests.swift",
+    "Services/Telemetry/TelemetryErrorClassifierTests.swift",
+] : []
+
 let mlxLocalLLMTargets: [Target] = enableMLXLocalLLM ? [
     .target(
         name: "MacParakeetLocalLLM",
@@ -86,6 +128,66 @@ let mlxLocalLLMTargets: [Target] = enableMLXLocalLLM ? [
     )
 ] : []
 
+let standardTargets: [Target] = [
+    // Main GUI app
+    .executableTarget(
+        name: "MacParakeet",
+        dependencies: appDependencies,
+        path: "Sources/MacParakeet",
+        resources: [.process("Resources")],
+        swiftSettings: mlxLocalLLMSwiftSettings + compatibilitySwiftSettings
+    ),
+    // macparakeet-cli — versioned public surface (semver, Sources/CLI/CHANGELOG.md).
+    // Consumed by the macOS app, scripted callers, and downstream agent skills
+    // (see /AGENTS.md and integrations/README.md).
+    .executableTarget(
+        name: "CLI",
+        dependencies: [
+            "MacParakeetCore",
+            .product(name: "ArgumentParser", package: "swift-argument-parser")
+        ],
+        path: "Sources/CLI",
+        exclude: ["CHANGELOG.md", "README.md"]
+    ),
+    // Objective-C shim target for catching NSException in Swift.
+    // Swift's `do/try/catch` cannot catch Objective-C exceptions raised by
+    // AppKit / AVFoundation / Core Audio — we need an @try/@catch trampoline
+    // to convert them into Swift-throwable NSError values. See issue #91.
+    .target(
+        name: "MacParakeetObjCShims",
+        path: "Sources/MacParakeetObjCShims",
+        publicHeadersPath: "include"
+    ),
+    // Shared core library (no UI dependencies)
+    .target(
+        name: "MacParakeetCore",
+        dependencies: coreDependencies,
+        path: "Sources/MacParakeetCore",
+        exclude: coreExcludes,
+        swiftSettings: whisperKitSwiftSettings + compatibilitySwiftSettings
+    ),
+    // ViewModels library (testable, depends on Core + AppKit/SwiftUI)
+    .target(
+        name: "MacParakeetViewModels",
+        dependencies: ["MacParakeetCore"],
+        path: "Sources/MacParakeetViewModels",
+        swiftSettings: compatibilitySwiftSettings
+    ),
+    // Tests
+    .testTarget(
+        name: "MacParakeetTests",
+        dependencies: appTestDependencies,
+        path: "Tests/MacParakeetTests",
+        exclude: appTestExcludes,
+        swiftSettings: whisperKitSwiftSettings + mlxLocalLLMSwiftSettings + compatibilitySwiftSettings
+    ),
+    .testTarget(
+        name: "CLITests",
+        dependencies: ["CLI", "MacParakeetCore"],
+        path: "Tests/CLITests"
+    )
+]
+
 let package = Package(
     name: "MacParakeet",
     platforms: [
@@ -100,69 +202,5 @@ let package = Package(
         .library(name: "MacParakeetViewModels", targets: ["MacParakeetViewModels"])
     ],
     dependencies: packageDependencies,
-    targets: [
-        // Main GUI app
-        .executableTarget(
-            name: "MacParakeet",
-            dependencies: appDependencies,
-            path: "Sources/MacParakeet",
-            resources: [.process("Resources")],
-            swiftSettings: mlxLocalLLMSwiftSettings
-        ),
-        // macparakeet-cli — versioned public surface (semver, Sources/CLI/CHANGELOG.md).
-        // Consumed by the macOS app, scripted callers, and downstream agent skills
-        // (see /AGENTS.md and integrations/README.md).
-        .executableTarget(
-            name: "CLI",
-            dependencies: [
-                "MacParakeetCore",
-                .product(name: "ArgumentParser", package: "swift-argument-parser")
-            ],
-            path: "Sources/CLI",
-            exclude: ["CHANGELOG.md", "README.md"]
-        ),
-        // Objective-C shim target for catching NSException in Swift.
-        // Swift's `do/try/catch` cannot catch Objective-C exceptions raised by
-        // AppKit / AVFoundation / Core Audio — we need an @try/@catch trampoline
-        // to convert them into Swift-throwable NSError values. See issue #91.
-        .target(
-            name: "MacParakeetObjCShims",
-            path: "Sources/MacParakeetObjCShims",
-            publicHeadersPath: "include"
-        ),
-        // Shared core library (no UI dependencies)
-        .target(
-            name: "MacParakeetCore",
-            dependencies: coreDependencies,
-            path: "Sources/MacParakeetCore",
-            exclude: [
-                "Audio/README.md",
-                "Database/README.md",
-                "Licensing/README.md",
-                "Resources",
-                "Services/System/README.md",
-                "STT/README.md",
-                "TextProcessing/README.md",
-            ],
-            swiftSettings: whisperKitSwiftSettings
-        ),
-        // ViewModels library (testable, depends on Core + AppKit/SwiftUI)
-        .target(
-            name: "MacParakeetViewModels",
-            dependencies: ["MacParakeetCore"],
-            path: "Sources/MacParakeetViewModels"
-        ),
-        // Tests
-        .testTarget(
-            name: "MacParakeetTests",
-            dependencies: appTestDependencies,
-            path: "Tests/MacParakeetTests",
-            swiftSettings: whisperKitSwiftSettings + mlxLocalLLMSwiftSettings
-        ),
-        .testTarget(
-            name: "CLITests",
-            dependencies: ["CLI", "MacParakeetCore"],
-            path: "Tests/CLITests"
-        )
-    ] + mlxLocalLLMTargets
+    targets: standardTargets + mlxLocalLLMTargets
 )

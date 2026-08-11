@@ -48,6 +48,7 @@ public struct ObservabilityOperationContext: Sendable, Equatable {
 public enum Observability {
     @TaskLocal public static var currentOperationContext: ObservabilityOperationContext?
 
+    #if compiler(>=6.0)
     public static func withOperationContext<T: Sendable>(
         _ context: ObservabilityOperationContext,
         isolation: isolated (any Actor)? = #isolation,
@@ -70,6 +71,21 @@ public enum Observability {
             return try await operation()
         }
     }
+    #else
+    public static func withOperationContext<T: Sendable>(
+        _ context: ObservabilityOperationContext,
+        operation: () async throws -> T
+    ) async rethrows -> T {
+        if #available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *) {
+            return try await $currentOperationContext.withValue(
+                context,
+                operation: operation
+            )
+        } else {
+            return try await operation()
+        }
+    }
+    #endif
 
     public static func childOperationContext(startedAt: Date = Date()) -> ObservabilityOperationContext {
         if let currentOperationContext {

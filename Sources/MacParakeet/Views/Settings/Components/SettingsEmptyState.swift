@@ -4,6 +4,7 @@ import SwiftUI
 /// to configure (e.g. AI tab before any provider has been set up). Keeps the
 /// card's footprint instead of collapsing it, so the IA reads as deliberate
 /// rather than incomplete.
+@MainActor
 struct SettingsEmptyState: View {
     let icon: String
     let title: String

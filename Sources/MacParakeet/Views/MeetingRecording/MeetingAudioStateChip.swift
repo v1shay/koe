@@ -1,6 +1,7 @@
 import MacParakeetCore
 import SwiftUI
 
+@MainActor
 struct MeetingAudioStateChip: View {
     let state: MeetingAudioFile.State
 

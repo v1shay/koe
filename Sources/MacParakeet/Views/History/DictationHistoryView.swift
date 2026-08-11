@@ -3,6 +3,7 @@ import SwiftUI
 import MacParakeetCore
 import MacParakeetViewModels
 
+@MainActor
 struct DictationHistoryView: View {
     @Bindable var viewModel: DictationHistoryViewModel
     @State private var deleteAlertCount = 0
@@ -390,6 +391,7 @@ enum DictationTranscriptPresentation {
 
 // MARK: - Card Row View
 
+@MainActor
 struct DictationCardRow: View {
     let dictation: Dictation
     var searchText: String = ""
@@ -803,6 +805,7 @@ private struct ExpandedTranscriptHeightKey: PreferenceKey {
 
 // MARK: - Selection Toggle
 
+@MainActor
 private struct SelectionToggleButton: View {
     let isSelected: Bool
     let action: () -> Void
@@ -833,6 +836,7 @@ private struct SelectionToggleButton: View {
 
 // MARK: - Hover-Aware Action Button
 
+@MainActor
 private struct CardActionButton: View {
     let icon: String
     let color: Color
@@ -862,6 +866,7 @@ private struct CardActionButton: View {
 
 // MARK: - Hover-Aware Menu Button (AppKit NSMenu for reliable clicks)
 
+@MainActor
 private struct CardMenuButton: View {
     let hasAudio: Bool
     let hasAIEdit: Bool

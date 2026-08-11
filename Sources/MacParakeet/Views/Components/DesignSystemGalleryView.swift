@@ -11,6 +11,7 @@ import SwiftUI
 ///
 /// Light/dark are exercised side-by-side via the canvas environment in
 /// the preview block.
+@MainActor
 struct DesignSystemGalleryView: View {
     var body: some View {
         ScrollView {

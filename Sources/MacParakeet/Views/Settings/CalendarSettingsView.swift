@@ -12,6 +12,7 @@ import SwiftUI
 /// Phases 1+2) plus the reminder, event-filter, and per-calendar controls.
 /// `.off` is the toggle's unchecked state, so it no longer competes with the
 /// mode choice the way the old three-value picker did.
+@MainActor
 struct CalendarSettingsView: View {
     @Bindable var viewModel: SettingsViewModel
     @State private var availableCalendars: [CalendarInfo] = []

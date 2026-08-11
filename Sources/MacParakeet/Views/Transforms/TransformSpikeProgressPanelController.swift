@@ -208,6 +208,7 @@ final class TransformSpikeProgressPanelController {
 
 // MARK: - View
 
+@MainActor
 private struct TransformSpikeProgressView: View {
     var viewModel: TransformSpikeProgressViewModel
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -333,6 +334,7 @@ private struct TransformSpikeProgressView: View {
 /// promoted to a shared component during the spike; a follow-up should
 /// extract this into `Views/Components/` so dictation, meeting, and transforms
 /// share one brand atom for "the thing happened."
+@MainActor
 private struct CheckmarkView: View {
     var tint: Color
     @State private var ringTrim: CGFloat = 0
@@ -383,6 +385,7 @@ private struct CheckmarkView: View {
 /// Triangle outline strokes in, then a centered bang fades up. Keeps the
 /// affordance warm (amber, not red) — failures are recoverable, the user just
 /// needs to retry or fix configuration.
+@MainActor
 private struct FailingTriangleView: View {
     var tint: Color
     @State private var triangleTrim: CGFloat = 0

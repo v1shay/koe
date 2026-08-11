@@ -15,6 +15,7 @@ import SwiftUI
 /// path or "drop assistant reply into notes" affordance — that invariant is
 /// what lets any future summary template treat `{{userNotes}}` as a trustable
 /// signal of what the user actually cares about.
+@MainActor
 struct LiveNotesPaneView: View {
     @Bindable var viewModel: MeetingNotesViewModel
     /// Elapsed meeting time, supplied by the parent panel. Used by the
@@ -146,6 +147,7 @@ struct LiveNotesPaneView: View {
     /// rows; the highlighted row tracks `viewModel.slashSelection` (driven
     /// by the editor's `.onKeyPress` handlers above). Click-to-select is
     /// also wired up so mouse users get the same affordance.
+    @MainActor
     private struct SlashMenuOverlay: View {
         @Bindable var viewModel: MeetingNotesViewModel
         var elapsedSeconds: Int
@@ -181,6 +183,7 @@ struct LiveNotesPaneView: View {
         }
     }
 
+    @MainActor
     private struct SlashCommandRow: View {
         let command: SlashCommand
         let isHighlighted: Bool

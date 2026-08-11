@@ -5,6 +5,7 @@ import SwiftUI
 
 /// Apple-style success checkmark: thin ring draws, then thin check strokes in.
 /// Inspired by Apple Pay / Activity completion — confidence through restraint.
+@MainActor
 private struct AnimatedCheckmarkView: View {
     @State private var ringTrim: CGFloat = 0
     @State private var checkTrim: CGFloat = 0
@@ -61,6 +62,7 @@ private struct CheckmarkShape: Shape {
 /// the pill expands horizontally as the falling leaf + serif label bloom in.
 /// The `expanded` prop is driven by the parent so the pill's padding (circle ↔
 /// oval) stays in sync with this view's internal leaf/text animations.
+@MainActor
 private struct NoSpeechContentView: View {
     let isCommand: Bool
     let expanded: Bool
@@ -167,6 +169,7 @@ private struct NoSpeechContentView: View {
 /// and future edits stay coordinated. With today's values the drift ends at
 /// ~2.1s after the oval expansion — exactly the 2.5s dismiss boundary once
 /// the 0.4s expansion delay is accounted for.
+@MainActor
 private struct NoSpeechLightDrift: View {
     let active: Bool
 
@@ -211,6 +214,7 @@ private struct NoSpeechLightDrift: View {
 }
 
 /// The dictation overlay — compact dark capsule during dictation, wider card for errors.
+@MainActor
 struct DictationOverlayView: View {
     @Bindable var viewModel: DictationOverlayViewModel
     @Environment(\.accessibilityReduceMotion) private var reduceMotion

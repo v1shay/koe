@@ -7,6 +7,7 @@ import SwiftUI
 /// The button shows the current selection's English label and a chevron.
 /// Tapping opens the popover; commit dismisses it. Disabled state matches the
 /// segmented engine picker so the row visually mutes when Whisper is inactive.
+@MainActor
 struct LanguagePickerButton: View {
     @Binding var selection: String
     var isDisabled: Bool
@@ -46,6 +47,7 @@ struct LanguagePickerButton: View {
 /// Selection commits and dismisses on click or ⏎; Esc dismisses (handled by
 /// the popover itself). Keyboard nav: ↑↓ moves the highlight, hover syncs it
 /// to whichever row the cursor is over so the two input modes don't fight.
+@MainActor
 struct LanguagePickerPopover: View {
     @Binding var selection: String
     var onCommit: () -> Void

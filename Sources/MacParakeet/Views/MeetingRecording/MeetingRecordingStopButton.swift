@@ -2,6 +2,7 @@ import SwiftUI
 
 /// Stop button with inline confirmation.
 /// First click asks for confirmation; second click within 3 seconds stops.
+@MainActor
 struct StopRecordingButton: View {
     var onStop: () -> Void
 
@@ -110,6 +111,7 @@ struct StopRecordingButton: View {
 
 /// Meeting-local microphone mute. System audio keeps recording, so this is
 /// intentionally separate from pause.
+@MainActor
 struct MeetingMicrophoneMuteButton: View {
     var isMuted: Bool
     var onToggle: () -> Void
@@ -197,6 +199,7 @@ struct MeetingMicrophoneMuteButton: View {
 /// already paused, the resume affordance bumps to `textPrimary.opacity(0.85)`
 /// so the "click to come back" cue is more prominent than the pause cue
 /// — paused is a held-breath state; resume is the exhale.
+@MainActor
 struct PauseResumeButton: View {
     var isPaused: Bool
     var onToggle: () -> Void

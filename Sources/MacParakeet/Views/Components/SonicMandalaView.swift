@@ -3,6 +3,7 @@ import MacParakeetCore
 
 /// Circular waveform visualization derived from audio data — each recording's unique visual fingerprint.
 /// Generates a radial pattern from word-level confidence scores (or text hash for dictations without timestamps).
+@MainActor
 struct SonicMandalaView: View {
     let data: MandalaData
     var size: CGFloat = 32

@@ -24,7 +24,7 @@
   <a href="https://deepwiki.com/moona3k/macparakeet"><img src="https://deepwiki.com/badge.svg" alt="Ask DeepWiki"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-GPL--3.0-blue.svg" alt="GPL-3.0 License"></a>
   <img src="https://img.shields.io/badge/macOS-14.2%2B-000000.svg" alt="macOS 14.2+">
-  <img src="https://img.shields.io/badge/Swift-6.0-F05138.svg" alt="Swift 6">
+  <img src="https://img.shields.io/badge/Swift-5.10%20%7C%206-F05138.svg" alt="Swift 5.10 and 6">
   <a href="https://github.com/v1shay/koe/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/v1shay/koe/ci.yml?branch=main&label=CI" alt="CI status"></a>
   <img src="https://img.shields.io/badge/Apple%20Silicon-only-333333.svg" alt="Apple Silicon only">
 </p>
@@ -200,6 +200,12 @@ scripts/dev/run_app.sh    # build, sign, launch
 
 The dev script creates a signed `.app` bundle so macOS grants mic and accessibility permissions. It disables target-level Xcode signing, then signs the finished bundle with the best available local identity. Override with `MACPARAKEET_CODESIGN_IDENTITY="Your Identity"` if needed.
 
+Source builds support Xcode 15.4 (Swift 5.10) and newer. Xcode 15.4 builds
+include the local Parakeet v3, v2, Unified, and Cohere routes. Nemotron and
+WhisperKit require their Swift 6/Xcode 16 dependency implementations, so those
+two choices are hidden on Xcode 15.4 and any previously saved choice safely
+falls back to Parakeet. Xcode 16+ builds retain the complete engine set.
+
 ## Command line and agent automation
 
 `macparakeet-cli` is the public automation surface for MacParakeet: the canonical Swift-native interface to Parakeet TDT on Apple Silicon, plus the scriptable entry point for MacParakeet's local library, model cache, prompts, meetings, and JSON contracts. Use [`integrations/README.md`](integrations/README.md) for the agent-facing automation guide and [`Sources/CLI/CHANGELOG.md`](Sources/CLI/CHANGELOG.md) for compatibility notes.
@@ -254,7 +260,7 @@ Use `--format transcript` for transcript-only stdout in shell pipelines. Add `--
 |-------|--------|
 | STT | Parakeet via [FluidAudio](https://github.com/FluidInference/FluidAudio) CoreML (`v3` standard-path default, `v2` English-only opt-in, `unified` English-only punctuated opt-in) + local Nemotron Beta, Cohere Transcribe, and WhisperKit engines; locale-aware CJK/Korean onboarding can select WhisperKit initially |
 | STT orchestration | Shared runtime + explicit scheduler with a reserved dictation slot and a shared meeting/file slot; speech-engine routing and meeting-session pinning |
-| Language | Swift 6 language mode (package tools-version 5.9) + SwiftUI |
+| Language | Swift 5.10 and Swift 6 (package tools-version 5.9) + SwiftUI |
 | Database | SQLite via GRDB |
 | Auto-updates | Sparkle 2 |
 | Media URLs | yt-dlp |

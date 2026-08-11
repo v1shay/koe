@@ -4,6 +4,7 @@ import MacParakeetCore
 private let sharedThumbnailCache = ThumbnailCacheService.shared
 
 /// Thumbnail card for displaying a transcription in a grid layout.
+@MainActor
 struct TranscriptionThumbnailCard<MenuContent: View>: View {
     let transcription: Transcription
     var searchText: String = ""

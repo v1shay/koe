@@ -1,5 +1,6 @@
 import SwiftUI
 
+@MainActor
 struct BulkTranscriptionSelectionBar: View {
     let selectedCount: Int
     let selectedMeetingAudioCount: Int
@@ -258,6 +259,7 @@ private enum SelectionBarActionTone {
     }
 }
 
+@MainActor
 private struct SelectionBarActionButton: View {
     let title: String
     let systemImage: String

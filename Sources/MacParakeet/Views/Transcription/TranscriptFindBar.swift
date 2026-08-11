@@ -8,6 +8,7 @@ import SwiftUI
 /// Mirrors `SettingsSearchField`'s capsule styling and Esc/clear conventions
 /// but adds match navigation and an "X of Y" counter. It owns no search index —
 /// the parent feeds blocks to a `TranscriptFindModel` and reacts to the cursor.
+@MainActor
 struct TranscriptFindBar: View {
     @Binding var query: String
     @FocusState.Binding var isFocused: Bool

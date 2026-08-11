@@ -3,6 +3,7 @@ import SwiftUI
 /// Ensō-inspired dual audio indicator.
 /// An outer ring breathes with system audio; a center dot pulses with mic level.
 /// Subtle glow creates a living, zen quality at compact size.
+@MainActor
 struct DualAudioOrbView: View {
     var micLevel: Float
     var systemLevel: Float

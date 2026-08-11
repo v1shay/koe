@@ -63,7 +63,11 @@ extension OfflineDiarizerManager: OfflineDiarizerManaging {
 }
 
 // @unchecked Sendable: all access is serialized through DiarizationService actor isolation.
+#if compiler(>=6.0)
 extension OfflineDiarizerManager: @retroactive @unchecked Sendable {}
+#else
+extension OfflineDiarizerManager: @unchecked Sendable {}
+#endif
 
 public actor DiarizationService: DiarizationServiceProtocol {
     private let manager: any OfflineDiarizerManaging

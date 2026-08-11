@@ -3,6 +3,7 @@ import UniformTypeIdentifiers
 import MacParakeetCore
 import MacParakeetViewModels
 
+@MainActor
 struct TranscribeView: View {
     @Bindable var viewModel: TranscriptionViewModel
     var chatViewModel: TranscriptChatViewModel
@@ -654,6 +655,7 @@ struct TranscribeView: View {
     }
 }
 
+@MainActor
 private struct AudioTrackSelectionSheet: View {
     let request: TranscriptionViewModel.AudioTrackSelectionRequest
     let onSelect: (Int) -> Void

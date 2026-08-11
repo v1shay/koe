@@ -2,6 +2,7 @@ import SwiftUI
 import MacParakeetCore
 import MacParakeetViewModels
 
+@MainActor
 struct TextSnippetsView: View {
     @Bindable var viewModel: TextSnippetsViewModel
     @Environment(\.dismiss) private var dismiss
@@ -294,6 +295,7 @@ struct TextSnippetsView: View {
     }
 }
 
+@MainActor
 private struct SnippetEditRow: View {
     @Bindable var viewModel: TextSnippetsViewModel
     let snippet: TextSnippet
@@ -379,6 +381,7 @@ private struct SnippetEditRow: View {
     }
 }
 
+@MainActor
 private struct SnippetUsageBadge: View {
     let useCount: Int
     let usageHint: String

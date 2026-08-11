@@ -5,6 +5,7 @@ import MacParakeetViewModels
 /// system `.segmented` style so the selected tab uses the app's accent
 /// rather than system blue, and a `matchedGeometryEffect` slides the pill
 /// between options for a small moment of delight.
+@MainActor
 struct DictationSubTabPicker: View {
     @Binding var selection: DictationHistoryViewModel.SubTab
     @Namespace private var pillNamespace

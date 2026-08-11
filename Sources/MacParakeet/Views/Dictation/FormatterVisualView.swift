@@ -46,6 +46,7 @@ import SwiftUI
 /// Honors `Reduce Motion` by presenting the fully-bloomed peak state
 /// statically — the user still sees the coral flower, just no spin. The
 /// view is exposed to VoiceOver as "Refining transcript."
+@MainActor
 struct FormatterVisualView: View {
     /// Outer diameter of the icon box. The pill's equal padding (10 pt on
     /// each side, when icon-only) adds 20 pt on top, so the pill renders
